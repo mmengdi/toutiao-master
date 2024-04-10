@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { ElNotification } from 'element-plus'
 const login = () => {
   ElNotification({
@@ -7,6 +8,29 @@ const login = () => {
     type: 'success',
   })
 }
+
+const currentHoverIndex = ref(null);
+const currentPhoneContainerClass = ref('toutiao');
+
+const changePhoneContainer = (index) => {
+  currentHoverIndex.value = index;
+  switch (index) {
+    case 0:
+      currentPhoneContainerClass.value = 'toutiao';
+      break;
+    case 1:
+      currentPhoneContainerClass.value = 'xigua';
+      break;
+    case 2:
+      currentPhoneContainerClass.value = 'dongchedi';
+      break;
+    case 3:
+      currentPhoneContainerClass.value = 'wukong';
+      break;
+    default:
+      break;
+  }
+};
 </script>
 
 <template>
@@ -482,6 +506,86 @@ const login = () => {
     <div class="distribute-platform show-content">
       <div class="title">内容多平台分发</div>
       <div class="subtitle">粉丝数据全面打通，多渠道涨粉，全平台共享</div>
+      <div class="distribute-platform-content">
+        <div class="distribute-platform-text">
+          <div class="distribute-platform-item" @mouseover="changePhoneContainer(0)">
+            <div class="distribute-platform-item-content">
+              <img class="distribute-platform-item-avatar" src="@/assets/images/logo-toutiao.png">
+              <div class="distribute-platform-item-title">今日头条</div>
+              <div>
+                <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class="">
+                  <path fill="#000" d="M0 7h16v2H0z"></path>
+                  <path fill="#000" d="M9 0v16H7V0z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="distribute-platform-item-desc">
+              今日头条是一个通用信息平台，致力于连接人与信息，让优质丰富的信息得到高效精准的分发，促使信息创造价值
+            </div>
+          </div>
+          <div class="distribute-platform-item" @mouseover="changePhoneContainer(1)">
+            <div class="distribute-platform-item-content"><img class="distribute-platform-item-avatar"
+                src="@/assets/images/logo-xigua.png">
+              <div class="distribute-platform-item-title">西瓜视频</div>
+              <div><svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class="">
+                  <path fill="#000" d="M0 7h16v2H0z"></path>
+                  <path fill="#000" d="M9 0v16H7V0z"></path>
+                </svg></div>
+            </div>
+            <div class="distribute-platform-item-desc">西瓜视频是一个PUGC视频平台，为用户提供丰富的优质内容。同时鼓励多样化创作，帮助人们轻松地分享视频作品</div>
+          </div>
+          <div class="distribute-platform-item" @mouseover="changePhoneContainer(2)">
+            <div class="distribute-platform-item-content"><img class="distribute-platform-item-avatar"
+                src="@/assets/images/logo-dongchedi.png">
+              <div class="distribute-platform-item-title">懂车帝</div>
+              <div>
+                <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class="">
+                  <path fill="#000" d="M0 7h16v2H0z"></path>
+                  <path fill="#000" d="M9 0v16H7V0z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="distribute-platform-item-desc">懂车帝是“看车、选车、买车”一站式汽车媒体和服务平台，产品基于个性化推荐引擎帮助用户发现感兴趣的汽车内容</div>
+          </div>
+          <div class="distribute-platform-item" @mouseover="changePhoneContainer(3)">
+            <div class="distribute-platform-item-content"><img class="distribute-platform-item-avatar"
+                src="@/assets/images/logo-wukong.png">
+              <div class="distribute-platform-item-title">悟空问答</div>
+              <div><svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class="">
+                  <path fill="#000" d="M0 7h16v2H0z"></path>
+                  <path fill="#000" d="M9 0v16H7V0z"></path>
+                </svg></div>
+            </div>
+            <div class="distribute-platform-item-desc">悟空问答是一款靠谱的问答社区产品，专注分享知识、经验、观念。在这里，所有人都能找到答案、参与讨论</div>
+          </div>
+        </div>
+        <div class="distribute-platform-phone">
+          <div class="distribute-platform-phone-wrapper">
+            <div class="distribute-platform-phone-container" :class="currentPhoneContainerClass">
+              <div class="distribute-platform-video-item">
+                <video class="distribute-platform-video" preload="preload" autoplay muted
+                  src="@/assets/images/video/distribute-toutiao-v3.mp4">
+                </video>
+              </div>
+              <div class="distribute-platform-video-item">
+                <video class="distribute-platform-video" preload="preload" autoplay muted
+                  src="@/assets/images/video/distribute-xigua-v3.mp4">
+                </video>
+              </div>
+              <div class="distribute-platform-video-item">
+                <video class="distribute-platform-video" preload="preload" autoplay muted
+                  src="@/assets/images/video/distribute-dongchedi-v2.mp4">
+                </video>
+              </div>
+              <div class="distribute-platform-video-item">
+                <video class="distribute-platform-video" preload="preload" autoplay muted
+                  src="@/assets/images/video/distribute-wukong-v2.mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -551,14 +655,7 @@ const login = () => {
       color: #666;
     }
 
-    .show-content {
-      -webkit-animation: showContent .5s;
-      animation: showContent .5s;
-      -webkit-animation-fill-mode: forwards;
-      animation-fill-mode: forwards;
-      -webkit-animation-timing-function: cubic-bezier(.34, .69, .1, 1);
-      animation-timing-function: cubic-bezier(.34, .69, .1, 1);
-    }
+
 
     .group-source-wrapper {
       width: 1024px;
@@ -613,8 +710,161 @@ const login = () => {
         transition: width .35s ease;
       }
 
-      
+
     }
+  }
+
+  .show-content {
+    /* -webkit-animation: showContent .5s; */
+    animation: showContent .5s;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-timing-function: cubic-bezier(.34, .69, .1, 1);
+    animation-timing-function: cubic-bezier(.34, .69, .1, 1);
+  }
+
+  .distribute-platform {
+    padding-top: 120px;
+    overflow: hidden;
+
+    .title {
+      line-height: 40px;
+      color: #222;
+      text-align: center;
+      font-size: 36px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-top: 20px;
+      text-align: center;
+      line-height: 24px;
+      font-size: 16px;
+      color: #666;
+    }
+
+    .distribute-platform-content {
+      width: 1210px;
+      margin: 0 auto;
+      display: flex;
+      transform: translateX(94px);
+
+      .distribute-platform-text {
+        width: 522px;
+        box-shadow: inset 0 -1px 0 #ececec;
+        height: -webkit-fit-content;
+        height: -moz-fit-content;
+        height: fit-content;
+        margin-top: 110px;
+
+        .distribute-platform-item {
+          box-shadow: inset 0 1px 0 #ececec;
+          padding: 36px 0;
+
+          .distribute-platform-item-content {
+            display: flex;
+            align-items: center;
+
+            .distribute-platform-item-avatar {
+              width: 48px;
+              height: 48px;
+            }
+
+            .distribute-platform-item-title {
+              margin-left: 16px;
+              font-size: 20px;
+              font-weight: 500;
+              flex-grow: 1;
+            }
+
+            svg {
+              font-size: 16px;
+              transition: transform .35s ease;
+            }
+          }
+
+          .distribute-platform-item-desc {
+            width: 360px;
+            height: 0;
+            margin-left: 64px;
+            margin-top: 4px;
+            font-size: 16px;
+            line-height: 24px;
+            color: #666;
+            overflow: hidden;
+            opacity: 0;
+            transition: height 0.35s ease, opacity 0.35s ease;
+          }
+        }
+
+        .distribute-platform-item:hover .distribute-platform-item-desc {
+          height: 50px;
+          opacity: 1;
+        }
+      }
+
+      .distribute-platform-phone {
+        width: 596px;
+        height: 945px;
+        background: url("@/assets/images/distribute-bg.png") no-repeat;
+        background-size: contain;
+        padding: 108px 0 0 108px;
+        margin-left: 90px;
+        margin-top: -40px;
+
+        .distribute-platform-phone-wrapper {
+          width: 300px;
+          overflow: hidden;
+          border-radius: 32px;
+          height: 650px;
+
+          .distribute-platform-phone-container {
+            width: 1240px;
+            transition: transform .35s ease;
+            background-color: #000;
+
+            .distribute-platform-video-item {
+              width: 300px;
+              height: 650px;
+              margin-right: 10px;
+              border-radius: 32px;
+              overflow: hidden;
+              display: inline-block;
+
+              .distribute-platform-video {
+                width: 100%;
+                height: 100%;
+              }
+
+
+            }
+          }
+
+         
+
+        }
+      }
+    }
+
+        .distribute-platform-phone-container {
+          transition: transform 0.3s ease;
+        }
+    
+        .distribute-platform-phone-container.toutiao {
+          transform: translateX(0);
+        }
+    
+        .distribute-platform-phone-container.xigua {
+          transform: translateX(-310px);
+        }
+    
+        .distribute-platform-phone-container.dongchedi {
+          transform: translateX(-620px);
+        }
+    
+        .distribute-platform-phone-container.wukong {
+          transform: translateX(-930px);
+        }
   }
 }
 </style>
