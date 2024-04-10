@@ -477,6 +477,11 @@ const login = () => {
           <div class="group-source-item-desc">将图文、视频等内容组成专栏，自定价格向用户售卖</div>
         </div>
       </div>
+
+    </div>
+    <div class="distribute-platform show-content">
+      <div class="title">内容多平台分发</div>
+      <div class="subtitle">粉丝数据全面打通，多渠道涨粉，全平台共享</div>
     </div>
   </div>
 </template>
@@ -607,6 +612,8 @@ const login = () => {
         left: 0;
         transition: width .35s ease;
       }
+
+      
     }
   }
 }
