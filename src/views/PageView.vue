@@ -780,7 +780,7 @@ const toggleContent = () => {
       </div>
     </div>
 
-    <div class="top-author show-content">
+    <div class="top-author show-content" v-slide-in>
       <div class="title">180万+创作者共同创造</div>
       <div class="subtitle">在今日头条，与你一起看见更大的世界</div>
       <div class="icon-left switch-icon" @click="toggleContent">
@@ -823,7 +823,7 @@ const toggleContent = () => {
           </defs>
         </svg>
       </div>
-      <div class="content-wrapper">
+      <div class="content-wrapper" v-slide-in>
         <div class="content init" id="content1" v-if="content === 'content1'">
           <div class="author-item first-line" style="left: 114px;">
             <div class="author-item-bg"></div>
