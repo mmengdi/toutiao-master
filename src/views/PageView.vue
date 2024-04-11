@@ -4,7 +4,49 @@ import { ElNotification } from 'element-plus'
 import type { TabsPaneContext } from 'element-plus'
 import vSlideIn from '@/utils/vSlideIn'
 
-const activeName = ref('first')
+// 隐藏第一页的导航栏
+const showHeader = ref(false);
+const handleScroll = () => {
+  const firstScreenBottom = document.querySelector('.first-screen')?.getBoundingClientRect().bottom;
+  if (firstScreenBottom !== undefined) {
+    showHeader.value = firstScreenBottom <= 0;
+  }
+};
+// 点击按钮播放视频声音
+const videoRef = ref<HTMLVideoElement | null>(null);
+const isMuted = ref<boolean>(true);
+// 点击静音图标切换有声音的图标
+const isSecondSvg = ref(false);
+const toggleMute = () => {
+  isSecondSvg.value = !isSecondSvg.value;
+  if (videoRef.value) {
+    videoRef.value.muted = !videoRef.value.muted;
+    isMuted.value = videoRef.value.muted;
+  }
+};
+
+// 滑动查看更多
+const mouseRef = ref<HTMLElement | null>(null);
+const animateScroll = () => {
+  const mouse = mouseRef.value;
+  if (mouse) {
+    mouse.animate([
+      { transform: 'translateY(0px)' },
+      { transform: 'translateY(15px)' },
+      { transform: 'translateY(0px)' }
+    ], {
+      duration: 2000,
+      iterations: Infinity
+    });
+  }
+};
+const scrollToNextPage = () => {
+  const nextPage = document.querySelector('.group-source');
+  if (nextPage) {
+    nextPage.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+
 // 登录
 const login = () => {
   ElNotification({
@@ -38,6 +80,7 @@ const changePhoneContainer = (index: number) => {
 };
 
 // tab切换
+const activeName = ref('first')
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event)
 }
@@ -77,9 +120,12 @@ onMounted(() => {
     });
   }, 50); // 滚动间隔，可以根据需要调整
 
+  window.addEventListener('scroll', handleScroll);
+  animateScroll();
   // 当组件销毁时清除定时器
   onUnmounted(() => {
     clearInterval(scrollInterval);
+    window.removeEventListener('scroll', handleScroll);
   });
 });
 
@@ -90,11 +136,14 @@ const content = ref('content1');
 const toggleContent = () => {
   content.value = content.value === 'content1' ? 'content2' : 'content1';
 };
+
+
+
 </script>
 
 <template>
   <div class="page-container">
-    <div class="login-header show-header">
+    <div class="login-header" :class="{ 'show-header': showHeader }">
       <a class="logo" aria-label="今日头条徽标" href="/" rel="nofollow"></a>
       <div class="btn-wrapper">
         <div class="register-btn">
@@ -113,6 +162,177 @@ const toggleContent = () => {
         </div>
       </div>
     </div>
+    <div class="first-screen">
+      <div class="video-wrapper">
+        <video autoplay preload="preload" loop :muted="isMuted" ref="videoRef"
+          src="@/assets/images/video/welcome-video.mp4" poster="@/assets/images/welcome-video-poster-v2.png"
+          class="video">
+        </video>
+      </div>
+      <div class="first-screen-logo">
+        <svg width="79" height="27" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M78.848 12.644v3.133H61.736l-.576 2.014h16.76v1.828l-1.669 7.233H59.375V23.45h13.581l.522-2.259H56.594v-1.7l1.063-3.715h-3.845v-3.133h25.036zM41.42 13.843v1.934h10.507v3.401H41.42v7.674h-4.08v-7.674H26.891v-3.401H37.34v-1.934h4.08zM18.104.85c-.101 7.245-.24 11.578-1.329 14.927h8.26v3.401h-9.898c-1.58 2.383-4.039 4.58-7.89 7.674H.968l.791-.625c3.87-3.053 6.53-5.151 8.334-7.049H0v-3.401h12.509c1.397-3.018 1.505-7.325 1.609-14.927h3.987zm3.06 20.029l3.867 5.973h-4.81l-3.867-5.973h4.81zm26.895 0l3.867 5.973h-4.811l-3.867-5.973h4.811zm-12.492 0l-3.866 5.973H26.89l3.866-5.973h4.811zM31.374 0l3.771 1.7h15.391v3.958c-1.14.987-2.862 2.413-5.857 3.91a89.124 89.124 0 007.248 1.468v3.63c-5.362-.847-9.447-1.862-12.608-2.907-3.2 1.074-7.255 2.09-12.428 2.904v-3.628a90.857 90.857 0 007.106-1.425c-2.22-1.1-3.65-2.124-4.73-2.898-.165-.118-1.678-1.256-1.678-1.256L31.374 0zM2.314 8.125l8.869 1.226v3.797L2.315 11.92V8.125zM77.365 1.7v8.93H55.295V1.7h22.07zm-31.91 3.4h-12.12c1.39.874 3.292 1.886 6.1 2.896 2.814-1.01 4.692-2.023 6.02-2.895zm27.83 0H59.375V7.23h13.91V5.102zm-70.97-3.4l8.869 1.226v3.797L2.315 5.497V1.7z"
+            fill="#fff"></path>
+        </svg>
+      </div>
+      <div id="BD_Login_Form" class="login-wrap">
+        <div class="web-login-container">
+          <article class="web-login">
+            <article class="web-login-union">
+              <div class="web-login-union__login">
+                <div class="web-login-union__login__form">
+                  <div class="web-login-union__login__form__title">验证码登录</div>
+                  <div class="web-login-union__login__form__content">
+                    <article class="web-login-mobile-code">
+                      <div class="web-login-mobile-code__mobile-input-wrapper">
+                        <div class="web-login-normal-input">
+                          <div class="web-login-area-code">
+                            <div class="web-login-area-code__input-wrapper"><input type="text" size="3"
+                                name="web-login-area-code-input" class="web-login-area-code__input-wrapper__input"
+                                autocomplete="off" role="combobox" tabindex="0" aria-owns="select-ul"
+                                aria-activedescendant="areacode_item_0" aria-label="国家/地区" value="+86"><i
+                                class="web-login-area-code__input-wrapper__icon-arrow web-login-area-code__input-wrapper__icon-arrow__down"></i>
+                            </div>
+                          </div><input name="normal-input" type="tel" class="web-login-normal-input__input"
+                            placeholder="手机号" autocomplete="tel" maxlength="50" tabindex="0" aria-label="请输入手机号"
+                            value="">
+                        </div>
+                      </div>
+                      <div class="web-login-mobile-code__code-input-wrapper">
+                        <div class="web-login-button-input"><span class="web-login-button-input__button-text send-input"
+                            tabindex="0" aria-live="off" role="button">获取验证码</span>
+                          <div class="web-login-button-input__input-wrapper send-input"><input name="button-input"
+                              type="tel" class="web-login-button-input__input" placeholder="验证码" autocomplete="off"
+                              maxlength="50" tabindex="0" aria-label="请输入验证码" value=""></div>
+                        </div>
+                      </div>
+                      <div class="web-login-error" role="alert" aria-relevant="all" tabindex="0" aria-live="assertive"
+                        aria-atomic="true" aria-label="警告:无"></div>
+                      <div class="web-login-confirm-info" tabindex="0" aria-label="我已阅读并同意《用户协议》和《隐私政策》"><span
+                          class="web-login-confirm-info__checkbox" role="checkbox" aria-checked="false" tabindex="0"
+                          aria-label="协议勾选框"></span><span class="web-login-confirm-info__before-text">我已阅读并同意</span><a
+                          target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
+                          aria-label="《用户协议》">《用户协议》</a><span class="web-login-confirm-info__connect-text">和</span><a
+                          target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
+                          aria-label="《隐私政策》">《隐私政策》</a></div>
+                      <div class="web-login-mobile-code__button-wrapper"><button type="submit"
+                          class="web-login-button web-login-button__disabled">登录</button></div>
+                    </article>
+                  </div>
+                </div>
+                <div class="web-login-union__login__scan-code">
+                  <div class="web-login-union__login__scan-code__title">扫码登录</div>
+                  <article class="web-login-scan-code">
+                    <div class="web-login-scan-code__content">
+                      <div class="web-login-scan-code__content__qrcode-wrapper">
+                        <img alt="" src="@/assets/images/web-login-scan-code.png"
+                          class="web-login-scan-code__content__qrcode-wrapper__qrcode" tabindex="0" aria-label="二维码">
+                        <div class="web-login-scan-code__content__qrcode-wrapper__mask">
+                          <div class="web-login-scan-code__content__qrcode-wrapper__mask__toast">
+                            <p class="web-login-scan-code__content__qrcode-wrapper__mask__toast__icon refresh"></p>
+                            <p class="web-login-scan-code__content__qrcode-wrapper__mask__toast__text refresh">点击刷新二维码
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="web-login-scan-desc">二维码已失效<span class="web-login-scan-desc__btn">点击刷新</span></p>
+                    </div>
+                  </article>
+                </div>
+              </div>
+              <div class="web-login-union__footer">
+                <div class="web-login-other-login-method">
+                  <div class="web-login-other-login-method__text">其他登录方式</div>
+                  <ul class="web-login-other-login-method__list">
+                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="抖音登录" role="button"><i
+                        class="web-login-other-login-method__list__item__icon web-login-other-login-method__list__item__icon__aweme"></i><span>抖音登录</span>
+                    </li>
+                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="QQ登录" role="button"><i
+                        class="web-login-other-login-method__list__item__icon web-login-other-login-method__list__item__icon__qzone_sns"></i><span>QQ登录</span>
+                    </li>
+                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="微信登录" role="button"><i
+                        class="web-login-other-login-method__list__item__icon web-login-other-login-method__list__item__icon__weixin"></i><span>微信登录</span>
+                    </li>
+                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="账密登录" role="button"><i
+                        class="web-login-other-login-method__list__item__icon web-login-other-login-method__list__item__icon__account_pwd"></i><span>密码登录</span>
+                    </li>
+                  </ul>
+                </div>
+                <ul class="web-login-link-list">
+                  <li class="web-login-link-list__item">
+                    <div class="web-login-link-list__item__text" tabindex="0" aria-label="立即注册" role="button">立即注册</div>
+                  </li>
+                  <li class="web-login-link-list__item">
+                    <div class="web-login-link-list__item__text" tabindex="0" aria-label="登录遇到问题" role="button">登录遇到问题
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </article>
+          </article>
+        </div>
+      </div>
+      <div class="first-screen-muted" @click="toggleMute">
+        <template v-if="!isSecondSvg">
+          <svg width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="#fff" fill-opacity="0.3"></circle>
+            <path clip-rule="evenodd"
+              d="M17.352 8.843a.565.565 0 01.103.324v13.666a.566.566 0 01-.89.463l-4.09-3.186a3.394 3.394 0 00-2.086-.716H8.404a1.131 1.131 0 01-1.131-1.131v-4.526c0-.624.506-1.13 1.131-1.13l1.986-.001c.755 0 1.489-.252 2.085-.716l4.09-3.186a.566.566 0 01.787.139z"
+              stroke="#fff" stroke-width="1.4"></path>
+            <path d="M20.488 13.943l4.114 4.114M24.602 13.943l-4.114 4.114" stroke="#fff" stroke-width="1.4"
+              stroke-linecap="round"></path>
+          </svg>
+        </template>
+        <template v-else>
+          <svg width="33" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="#fff" fill-opacity="0.3"></circle>
+            <path clip-rule="evenodd"
+              d="M17.443 8.843a.565.565 0 01.102.324v13.666a.566.566 0 01-.89.463l-4.09-3.186a3.394 3.394 0 00-2.085-.716H8.495a1.131 1.131 0 01-1.132-1.131v-4.526c0-.624.507-1.13 1.132-1.13l1.985-.001c.756 0 1.49-.252 2.085-.716l4.09-3.186a.566.566 0 01.788.139z"
+              stroke="#fff" stroke-width="1.4"></path>
+            <path d="M21.563 20a5.978 5.978 0 001.527-4 5.978 5.978 0 00-1.527-4" stroke="#fff" stroke-width="1.4">
+            </path>
+          </svg>
+        </template>
+      </div>
+      <div class="first-screen-mouse-hint">滑动查看更多</div>
+      <div class="first-screen-mouse" ref="mouseRef" @click="scrollToNextPage">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36"
+          preserveAspectRatio="xMidYMid meet" style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px);">
+          <defs>
+            <clipPath id="__lottie_element_160">
+              <rect width="36" height="36" x="0" y="0"></rect>
+            </clipPath>
+            <clipPath id="__lottie_element_163">
+              <path d="M0,0 L36,0 L36,36 L0,36z"></path>
+            </clipPath>
+          </defs>
+          <g clip-path="url(#__lottie_element_160)">
+            <g clip-path="url(#__lottie_element_163)" transform="matrix(1,0,0,1,0,-6.962577819824219)" opacity="1"
+              style="display: block;">
+              <g transform="matrix(1,0,0,1,18,18)" opacity="1" style="display: block;">
+                <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                  <path fill="rgb(255,255,255)" fill-opacity="1"
+                    d=" M1,-8.5 C1,-8.5 -1,-8.5 -1,-8.5 C-1,-8.5 -1,8.5 -1,8.5 C-1,8.5 1,8.5 1,8.5 C1,8.5 1,-8.5 1,-8.5z">
+                  </path>
+                </g>
+              </g>
+              <g transform="matrix(1,0,0,1,18,20)" opacity="1" style="display: block;">
+                <g opacity="1"
+                  transform="matrix(0.7071067690849304,-0.7071067690849304,0.7071067690849304,0.7071067690849304,0,0)">
+                  <path stroke-linecap="butt" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="4"
+                    stroke="rgb(255,255,255)" stroke-opacity="1" stroke-width="2"
+                    d=" M4.243000030517578,4.243000030517578 C4.243000030517578,4.243000030517578 -4.243000030517578,4.243000030517578 -4.243000030517578,4.243000030517578 C-4.243000030517578,4.243000030517578 -4.243000030517578,-4.243000030517578 -4.243000030517578,-4.243000030517578">
+                  </path>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+
     <div class="group-source show-content" v-slide-in>
       <div class="title">支持丰富的创作体裁</div>
       <div class="subtitle">包括文章、视频、微头条、问答、专栏、音频等体裁</div>
@@ -984,6 +1204,188 @@ const toggleContent = () => {
     }
   }
 
+  .first-screen {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-width: 1024px;
+
+    .video-wrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+
+      .video {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: cover;
+        object-fit: cover;
+        -o-object-position: left;
+        object-position: left;
+      }
+    }
+
+    .first-screen-logo {
+      position: absolute;
+      top: 60px;
+      left: calc(50% - 512px);
+      width: 79px;
+      height: 27px;
+    }
+
+    .login-wrap {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      border-radius: 8px;
+    }
+
+    .web-login-container {
+      width: -webkit-min-content;
+      width: -moz-min-content;
+      width: min-content;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .web-login {
+      border-radius: 8px;
+    }
+
+    .web-login {
+      width: 100%;
+      position: relative;
+      font-family: PingFang SC;
+      background-color: #fff;
+    }
+.web-login article {
+  display: block;
+}
+.web-login .web-login-union__login {
+  display: flex;
+  padding: 40px 0 44px;
+}
+.web-login .web-login-union__login__form {
+  padding: 0 48px 0 40px;
+}
+
+.web-login .web-login-union__login__form__title {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #222;
+}
+.web-login .web-login-union__login__form__content {
+  width: 308px;
+}
+.web-login .web-login-mobile-code__mobile-input-wrapper {
+  margin-top: 28px;
+}
+
+.web-login .web-login-button-input,
+.web-login .web-login-normal-input {
+  height: 40px;
+  line-height: 24px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+}
+
+.web-login .web-login-normal-input {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.web-login .web-login-area-code {
+  display: flex;
+  height: 100%;
+  font-size: 14px;
+  line-height: 22px;
+  position: relative;
+  margin-right: 8px;
+}
+.web-login .web-login-area-code__input-wrapper {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.web-login .web-login-area-code__input-wrapper__input {
+  min-width: 26px;
+  max-width: 42px;
+  height: 100%;
+  font-size: 14px;
+  line-height: 22px;
+  color: #222;
+  text-align: left;
+}
+.web-login input {
+  outline: none;
+  box-shadow: none;
+  background-color: transparent;
+  border: none;
+}
+.web-login .web-login-area-code__input-wrapper__icon-arrow__down {
+  transform: rotate(0);
+  transition: transform .5s;
+}
+
+.web-login .web-login-area-code__input-wrapper__icon-arrow {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: url("@/assets/images/arrow.png") no-repeat 50%;
+  background-size: 16px 16px;
+}
+.web-login .web-login-button-input__input,
+.web-login .web-login-normal-input__input {
+  background: #fff;
+}
+
+.web-login .web-login-normal-input__input {
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+    font-size: 14px;
+}
+
+
+
+
+    .first-screen-muted {
+      position: absolute;
+      bottom: 44px;
+      right: 100px;
+      cursor: pointer;
+      height: 32px;
+      width: 32px;
+    }
+
+    .first-screen-mouse-hint {
+      position: absolute;
+      bottom: 81px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .first-screen-mouse {
+      width: 28px;
+      height: 31px;
+      position: absolute;
+      bottom: 42px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: pointer;
+    }
+  }
+
   .group-source {
     padding-top: 120px;
 
@@ -1611,5 +2013,12 @@ const toggleContent = () => {
     }
   }
 
+}
+
+@media screen and (max-height: 656px) {
+  .login-wrap {
+    bottom: -102px;
+    top: unset;
+  }
 }
 </style>
