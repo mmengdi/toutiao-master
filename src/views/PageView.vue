@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { ElNotification } from 'element-plus'
+import type { TabsPaneContext } from 'element-plus'
+import vSlideIn from '@/utils/vSlideIn'
+
+const activeName = ref('first')
+// 登录
 const login = () => {
   ElNotification({
     title: '恭喜您',
@@ -9,10 +14,10 @@ const login = () => {
   })
 }
 
-const currentHoverIndex = ref(null);
+// 内容多平台分发 视频动画
+const currentHoverIndex = ref<number | null>(null);
 const currentPhoneContainerClass = ref('toutiao');
-
-const changePhoneContainer = (index) => {
+const changePhoneContainer = (index: number) => {
   currentHoverIndex.value = index;
   switch (index) {
     case 0:
@@ -30,6 +35,60 @@ const changePhoneContainer = (index) => {
     default:
       break;
   }
+};
+
+// tab切换
+const handleClick = (tab: TabsPaneContext, event: Event) => {
+  console.log(tab, event)
+}
+
+onMounted(() => {
+  const swiperWrapper = document.querySelector('.swiper-wrapper') as HTMLElement;
+  const swiperSlides = document.querySelectorAll('.swiper-slide') as NodeListOf<HTMLElement>;
+  let currentPosition = 0;
+  const scrollSpeed = 5; // 滚动速度，可以根据需要调整
+  let slideWidth = 0; // 单个图片宽度
+
+  // 获取单个图片宽度，这里假设所有图片宽度相同
+  if (swiperSlides.length > 0) {
+    slideWidth = swiperSlides[0].offsetWidth;
+  }
+
+  const scrollInterval = setInterval(() => {
+    currentPosition -= scrollSpeed;
+    swiperWrapper.style.transition = 'none'; // 移除过渡效果
+    swiperWrapper.style.transform = `translateX(${currentPosition}px)`;
+
+    // 到达末尾时，立即返回到起始位置
+    if (currentPosition <= -swiperWrapper.offsetWidth + slideWidth) {
+      currentPosition = 0;
+      swiperWrapper.style.transition = 'none'; // 移除过渡效果
+      swiperWrapper.style.transform = `translateX(${currentPosition}px)`;
+    }
+
+    swiperSlides.forEach((slide,) => {
+      const slideOffset = slide.offsetLeft;
+
+      if (slideOffset <= swiperWrapper.offsetWidth / 2 && slideOffset + slideWidth >= swiperWrapper.offsetWidth / 2) {
+        slide.style.transform = 'scale(1)';
+      } else {
+        slide.style.transform = 'scale(0.8)';
+      }
+    });
+  }, 50); // 滚动间隔，可以根据需要调整
+
+  // 当组件销毁时清除定时器
+  onUnmounted(() => {
+    clearInterval(scrollInterval);
+  });
+});
+
+
+// top-author切换
+const content = ref('content1');
+
+const toggleContent = () => {
+  content.value = content.value === 'content1' ? 'content2' : 'content1';
 };
 </script>
 
@@ -54,10 +113,10 @@ const changePhoneContainer = (index) => {
         </div>
       </div>
     </div>
-    <div class="group-source show-content">
+    <div class="group-source show-content" v-slide-in>
       <div class="title">支持丰富的创作体裁</div>
       <div class="subtitle">包括文章、视频、微头条、问答、专栏、音频等体裁</div>
-      <div class="group-source-wrapper">
+      <div class="group-source-wrapper" v-slide-in>
         <div class="group-source-item">
           <div class="group-source-item-svg">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48"
@@ -142,8 +201,9 @@ const changePhoneContainer = (index) => {
           <div class="group-source-item-desc">图片加文字的无数种排列，向世人表达你的所思所想</div>
         </div>
         <div class="group-source-item">
-          <div class="group-source-item-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48"
-              height="48" preserveAspectRatio="xMidYMid meet"
+          <div class="group-source-item-svg">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48"
+              preserveAspectRatio="xMidYMid meet"
               style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px);">
               <defs>
                 <clipPath id="__lottie_element_64">
@@ -208,7 +268,8 @@ const changePhoneContainer = (index) => {
                   </g>
                 </g>
               </g>
-            </svg></div>
+            </svg>
+          </div>
           <div class="group-source-item-title">视频</div>
           <div class="group-source-item-desc">用镜头捕捉光影，剪辑构建脉络，分享你的美好生活</div>
         </div>
@@ -503,7 +564,7 @@ const changePhoneContainer = (index) => {
       </div>
 
     </div>
-    <div class="distribute-platform show-content">
+    <div class="distribute-platform show-content" v-slide-in>
       <div class="title">内容多平台分发</div>
       <div class="subtitle">粉丝数据全面打通，多渠道涨粉，全平台共享</div>
       <div class="distribute-platform-content">
@@ -587,10 +648,297 @@ const changePhoneContainer = (index) => {
         </div>
       </div>
     </div>
+
+    <div class="service-plan show-content" v-slide-in>
+      <div class="title">服务包助力优质作者创作</div>
+      <div class="subtitle">多渠道流量扶持，多种签约计划，助力优质内容快速完成 0 到 1 冷启动</div>
+      <div class="plan-list" v-slide-in>
+        <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+          <el-tab-pane label="粉丝推荐" name="first"></el-tab-pane>
+          <el-tab-pane label="MCN签约" name="second"></el-tab-pane>
+          <el-tab-pane label="智能加权推荐" name="third"></el-tab-pane>
+          <el-tab-pane label="千人万元" name="fourth"></el-tab-pane>
+        </el-tabs>
+      </div>
+
+      <div class="swiper-container" v-slide-in>
+        <div class="swiper-wrapper" style="transition-duration: 0ms; transform: translate3d(-989.375px, 0px, 0px);">
+          <img class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active"
+            src="@/assets/images/welcome-fans-v2.png" data-swiper-slide-index="0" style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-next"
+            src="@/assets/images/welcome-mcn-v3.png" data-swiper-slide-index="1" style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-duplicate" src="@/assets/images/welcome-weights-v3.png"
+            data-swiper-slide-index="2" style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-duplicate swiper-slide-prev"
+            src="@/assets/images/welcome-thousand-v2.png" data-swiper-slide-index="3" style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-active" src="@/assets/images/welcome-fans-v2.png"
+            data-swiper-slide-index="0" style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-next" src="@/assets/images/welcome-mcn-v3.png"
+            data-swiper-slide-index="1" style="width: 395.75px;">
+          <img class="swiper-slide" src="@/assets/images/welcome-weights-v3.png" data-swiper-slide-index="2"
+            style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-duplicate-prev" src="@/assets/images/welcome-thousand-v2.png"
+            data-swiper-slide-index="3" style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active"
+            src="@/assets/images/welcome-fans-v2.png" data-swiper-slide-index="0" style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-next"
+            src="@/assets/images/welcome-mcn-v3.png" data-swiper-slide-index="1" style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-duplicate" src="@/assets/images/welcome-weights-v3.png"
+            data-swiper-slide-index="2" style="width: 395.75px;">
+          <img class="swiper-slide swiper-slide-duplicate" src="@/assets/images/welcome-thousand-v2.png"
+            data-swiper-slide-index="3" style="width: 395.75px;">
+        </div>
+        <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+      </div>
+
+    </div>
+
+    <div class="traffic-monetizing show-content" v-slide-in>
+      <div class="title">六大工具助力内容变现</div>
+      <div class="subtitle">未来一年，将推出“创作者收益计划”、“IP-UP计划”，让一万位创作者月薪过万，帮助创作者打造IP</div>
+      <div class="traffic-monetizing-wrapper" v-slide-in>
+        <div class="traffic-monetizing-item">
+          <div class="traffic-monetizing-item-flex">
+            <svg width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M23.906 14.51c0 5.57-4.446 10.065-9.906 10.065-5.46 0-9.906-4.495-9.906-10.066 0-2.838 1.155-5.4 3.013-7.228L8.2 6.283c1.6-1.46 3.578-2.44 5.708-2.828a.513.513 0 01.184 0A11.543 11.543 0 0119.8 6.283l1.093.998a10.112 10.112 0 013.013 7.228z"
+                stroke="#000" stroke-width="1.6">
+              </path>
+              <path d="M10.606 14.65c.675-.857 1.707-1.07 2.562-.527l.832.527.832.528c.854.542 1.886.33 2.562-.528"
+                stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              </path>
+            </svg>
+            <div class="traffic-monetizing-item-title">流量分成</div>
+          </div>
+          <div class="traffic-monetizing-item-desc">创作者发布文章时选择投放广告，或发布西瓜视频，即可获得创作收益分成，收益全部归创作者所有</div>
+        </div>
+        <div class="traffic-monetizing-item">
+          <div class="traffic-monetizing-item-flex"><svg width="28" height="28" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <rect x="5.25" y="5.25" width="17.5" height="17.5" rx="2" stroke="#000" stroke-width="1.478"></rect>
+              <path d="M10.938 13.125h6.124M12.25 15.75h3.5M14 12.688v5.687M12.25 10.063L14 12.25l1.75-2.188"
+                stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <div class="traffic-monetizing-item-title">现金激励</div>
+          </div>
+          <div class="traffic-monetizing-item-desc">创作者参与平台创作活动所获的现金激励，包括不限于有奖创作活动、青云计划奖励、平台签约奖励</div>
+        </div>
+        <div class="traffic-monetizing-item">
+          <div class="traffic-monetizing-item-flex"><svg width="28" height="29" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M16.499 23.252l6.372-7.965c.58-.726.87-1.09.98-1.49a1.999 1.999 0 00-.01-1.081c-.117-.4-.413-.757-1.007-1.473L18.92 6.531c-.353-.425-.529-.637-.745-.79a2 2 0 00-.633-.297c-.256-.069-.532-.069-1.084-.069h0-4.918 0c-.552 0-.828 0-1.084.069a2 2 0 00-.633.297c-.216.153-.392.365-.745.79l-3.913 4.712c-.594.716-.89 1.073-1.007 1.473a2 2 0 00-.01 1.08c.11.402.4.765.98 1.49l6.372 7.966c.854 1.067 1.281 1.601 1.797 1.794a2 2 0 001.404 0c.516-.193.943-.727 1.797-1.794z"
+                stroke="#000" stroke-width="1.6"></path>
+              <path d="M16.625 16.968l-1.99 2.488a.813.813 0 01-1.27 0l-1.99-2.488" stroke="#000" stroke-width="1.6"
+                stroke-linecap="round"></path>
+            </svg>
+            <div class="traffic-monetizing-item-title">内容付费</div>
+          </div>
+          <div class="traffic-monetizing-item-desc">创作者创建优质专栏、圈子等付费内容，经平台推荐、用户付费后的收益，按比例分成归创作者所有</div>
+        </div>
+        <div class="traffic-monetizing-item">
+          <div class="traffic-monetizing-item-flex"><svg width="28" height="28" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M6.57 7.826c.08-1.04.121-1.56.35-1.955a2 2 0 01.864-.799c.41-.197.932-.197 1.976-.197h8.48c1.044 0 1.566 0 1.976.197a2 2 0 01.864.8c.229.393.27.913.35 1.954l.926 11.85c.093 1.198.14 1.797-.064 2.259a2 2 0 01-.88.95c-.444.24-1.045.24-2.247.24H8.835c-1.202 0-1.803 0-2.247-.24a2 2 0 01-.88-.95c-.204-.462-.157-1.061-.064-2.26l.926-11.85z"
+                stroke="#000" stroke-width="1.6"></path>
+              <path d="M10.794 9.45l.138.69A3.128 3.128 0 0014 12.657v0a3.128 3.128 0 003.067-2.515l.138-.691"
+                stroke="#000" stroke-width="1.6" stroke-linecap="round"></path>
+            </svg>
+            <div class="traffic-monetizing-item-title">内容电商</div>
+          </div>
+          <div class="traffic-monetizing-item-desc">创作者可在全体裁内容中插入商品卡，用户实际购买并确认收到商品之后，作者可获得相应佣金收益</div>
+        </div>
+        <div class="traffic-monetizing-item">
+          <div class="traffic-monetizing-item-flex"><svg width="28" height="28" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M5 11.02a2 2 0 011.465-1.927l14-3.889A2 2 0 0123 7.131V18.87a2 2 0 01-2.535 1.927l-14-3.89A2 2 0 015 14.98v-3.96z"
+                stroke="#000" stroke-width="1.6"></path>
+              <path d="M17.375 23.375l-1.125-.313-2.25-.625-2.25-.625-1.125-.312" stroke="#000" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <div class="traffic-monetizing-item-title">内容营销</div>
+          </div>
+          <div class="traffic-monetizing-item-desc">创作者为品牌主定制创作优质推广内容，交付内容之后，即可获得来自品牌主的酬劳，实现内容变现</div>
+        </div>
+        <div class="traffic-monetizing-item">
+          <div class="traffic-monetizing-item-flex"><svg width="28" height="28" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M18.642 14.814a1 1 0 010-1.628l4.715-3.363a1 1 0 011.58.814v6.726a1 1 0 01-1.58.814l-4.715-3.363z"
+                stroke="#000" stroke-width="1.6"></path>
+              <rect x="3.5" y="6.795" width="16.625" height="14.41" rx="2" fill="#fff" stroke="#000" stroke-width="1.6">
+              </rect>
+              <circle cx="7.305" cy="10.805" r="0.875" fill="#000" stroke="#000" stroke-width="0.6"></circle>
+            </svg>
+            <div class="traffic-monetizing-item-title">头条直播</div>
+          </div>
+          <div class="traffic-monetizing-item-desc">创作者通过直播，可与粉丝进行深度互动，赚取直播打赏，以优质内容获得更多粉丝关注和打赏收益</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="top-author show-content">
+      <div class="title">180万+创作者共同创造</div>
+      <div class="subtitle">在今日头条，与你一起看见更大的世界</div>
+      <div class="icon-left switch-icon" @click="toggleContent">
+        <svg width="122" height="122" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g filter="url(#author-left_svg__filter0_d)">
+            <circle cx="61" cy="41" r="20" transform="rotate(-180 61 41)" stroke="#EFEFEF" stroke-width="2"></circle>
+          </g>
+          <path d="M62 45l-4-4 4-4" stroke="#F04142" stroke-width="1.4"></path>
+          <defs>
+            <filter id="author-left_svg__filter0_d" x="0" y="0" width="122" height="122" filterUnits="userSpaceOnUse"
+              color-interpolation-filters="sRGB">
+              <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+              <feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix>
+              <feOffset dy="20"></feOffset>
+              <feGaussianBlur stdDeviation="20"></feGaussianBlur>
+              <feColorMatrix values="0 0 0 0 0.458507 0 0 0 0 0.51401 0 0 0 0 0.579167 0 0 0 0.06 0"></feColorMatrix>
+              <feBlend in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend>
+              <feBlend in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend>
+            </filter>
+          </defs>
+        </svg>
+      </div>
+      <div class="icon-right switch-icon" @click="toggleContent">
+        <svg width="122" height="122" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g filter="url(#author-right_svg__filter0_d)">
+            <circle cx="61" cy="41" r="20" stroke="#EFEFEF" stroke-width="2"></circle>
+          </g>
+          <path d="M60 37l4 4-4 4" stroke="#F04142" stroke-width="1.4"></path>
+          <defs>
+            <filter id="author-right_svg__filter0_d" x="0" y="0" width="122" height="122" filterUnits="userSpaceOnUse"
+              color-interpolation-filters="sRGB">
+              <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+              <feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix>
+              <feOffset dy="20"></feOffset>
+              <feGaussianBlur stdDeviation="20"></feGaussianBlur>
+              <feColorMatrix values="0 0 0 0 0.458507 0 0 0 0 0.51401 0 0 0 0 0.579167 0 0 0 0.06 0"></feColorMatrix>
+              <feBlend in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend>
+              <feBlend in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend>
+            </filter>
+          </defs>
+        </svg>
+      </div>
+      <div class="content-wrapper">
+        <div class="content init" id="content1" v-if="content === 'content1'">
+          <div class="author-item first-line" style="left: 114px;">
+            <div class="author-item-bg"></div>
+            <img class="author-item-avatar" src="@/assets/images/top-author-1.png">
+            <div class="author-item-name">丁香医生</div>
+            <div class="author-item-desc">知名健康领域创作者，专注于做有温度、有知识、有态度的优质大众健康内容。目前在头条拥有149万粉丝，青云计划多次获奖者。</div>
+          </div>
+          <div class="author-item first-line" style="left: 342px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar" src="@/assets/images/top-author-2.png">
+            <div class="author-item-name">美食作家王刚</div>
+            <div class="author-item-desc">知名美食领域创作者，因其在头条创作的视频风格利落生猛，开创了「硬核美食」流派，在头条拥有超过千万粉丝，爆红全网。</div>
+          </div>
+          <div class="author-item first-line" style="left: 570px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar" src="@/assets/images/top-author-3.png">
+            <div class="author-item-name">混子曰</div>
+            <div class="author-item-desc">优质科普领域创作者，擅长用有趣独特的漫画让复杂难懂的知识流行起来。深受大众喜爱，在头条拥有 139万粉丝。</div>
+          </div>
+          <div class="author-item first-line" style="left: 798px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar" src="@/assets/images/top-author-4.png">
+            <div class="author-item-name">李永乐老师</div>
+            <div class="author-item-desc">中国人民大学附属中学物理教师，优质科普创作者，头条系平台粉丝超千万，多条视频被央视、人民日报等转载。</div>
+          </div>
+          <div class="author-item  second-line" style="left: 114px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar" src="@/assets/images/top-author-5.png">
+            <div class="author-item-name">巧妇9妹</div>
+            <div class="author-item-desc">三农领域创作者，获2018年CCTV“中国三农人物奖”，帮助村里的滞销水果找到新销路，帮助家乡农户增收，间接带动就业。</div>
+          </div>
+          <div class="author-item  second-line" style="left: 342px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar bordered"
+              src="@/assets/images/top-author-6.png">
+            <div class="author-item-name">第一军情</div>
+            <div class="author-item-desc">优质军事领域创作者，资深军事记者和著名党史、军史专家。始终用一丝不苟的精神提供及时、独家、深度的军事报道和评论分析。</div>
+          </div>
+          <div class="author-item  second-line" style="left: 570px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar" src="@/assets/images/top-author-7.png">
+            <div class="author-item-name">我是郭杰瑞</div>
+            <div class="author-item-desc">中外文化体验者，记录在中国的体验，对比中美文化，吐槽奇闻逸事，因视频风格幽默，性格有趣深受大众喜爱，全网粉丝超千万。</div>
+          </div>
+          <div class="author-item  second-line" style="left: 798px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar" src="@/assets/images/top-author-8.png">
+            <div class="author-item-name">张之瀛大夫</div>
+            <div class="author-item-desc">心内科医生，今日头条健康真相官。坚持用看诊的业余时间在头条上向百万人科普心脑血管知识，专业、靠谱的医学知识。</div>
+          </div>
+        </div>
+        <div class="content hidden init" id="content2" v-else>
+          <div class="author-item  first-line" style="left: 114px;">
+            <div class="author-item-bg"></div>
+            <img class="author-item-avatar" src="@/assets/images/top-author-9.png">
+            <div class="author-item-name">脑洞历史观</div>
+            <div class="author-item-desc">文史作家，历史问答专家，4 年时间图文累计阅读量达13亿，曾凭借一己之力将《DK博物大百科》这本书卖到全网断货。</div>
+          </div>
+          <div class="author-item  first-line" style="left: 342px;">
+            <div class="author-item-bg"></div>
+            <img class="author-item-avatar" src="@/assets/images/top-author-10.png">
+            <div class="author-item-name">黎贝卡的异想世界</div>
+            <div class="author-item-desc">时尚领域优质创作者，前《南方都市报》首席记者，人称“买买买教主”的她，用热爱打造自己的创作标签，在头条获赞无数。</div>
+          </div>
+          <div class="author-item  first-line" style="left: 570px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar" src="@/assets/images/top-author-11.png">
+            <div class="author-item-name">张召忠</div>
+            <div class="author-item-desc">原国防大学教授、退役海军少将、著名军事专家。研究范围涉及科学技术、武器装备、军事战略、国防建设、国际法规等多个学科领域。</div>
+          </div>
+          <div class="author-item  first-line" style="left: 798px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar bordered"
+              src="@/assets/images/top-author-12.png">
+            <div class="author-item-name">人民日报</div>
+            <div class="author-item-desc">作为人民日报的官方头条号，已于2018年9月入驻发布内容。有品质的新闻，参与、沟通、记录时代。</div>
+          </div>
+          <div class="author-item  second-line" style="left: 114px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar" src="@/assets/images/top-author-13.png">
+            <div class="author-item-name">新华社</div>
+            <div class="author-item-desc">有新闻的地方就有新华社，这是来自国家通讯社的声音。作为新华通讯社的官方头条号，发布重大新闻、突发事件、重点报道。</div>
+          </div>
+          <div class="author-item  second-line" style="left: 342px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar" src="@/assets/images/top-author-14.png">
+            <div class="author-item-name">央视新闻</div>
+            <div class="author-item-desc">中央电视台新闻中心通过今日头条客户端发布内容的官方渠道。在 2018 年发起的直播中，有 78 场，观看人数超过 100 万。</div>
+          </div>
+          <div class="author-item  second-line" style="left: 570px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar bordered"
+              src="@/assets/images/top-author-15.png">
+            <div class="author-item-name">中国政府网</div>
+            <div class="author-item-desc">作为中国政府网的官方头条号，第一时间，权威发布大政方针、政策解读、便民信息。国家大事早知道。</div>
+          </div>
+          <div class="author-item  second-line" style="left: 798px;">
+            <div class="author-item-bg"></div><img class="author-item-avatar bordered"
+              src="@/assets/images/top-author-16.png">
+            <div class="author-item-name">中央政法委长安剑</div>
+            <div class="author-item-desc">作为中央政法委官方账号，在各类社会热点事件中理性发声，定分止争，弘扬法治精神，影响力不断攀升。</div>
+          </div>
+        </div>
+        <div class="welcome-footer">
+          <div class="footer-2">
+            <a target="__blank" href="#">关于今日头条</a>
+            <span class="v-line"></span>
+            <a target="__blank" href="#">用户协议</a>
+            <span class="v-line"></span>
+            <a target="__blank" href="#">隐私政策</a>
+            <span class="v-line"></span>
+            <a target="__blank" href="#">社区规范</a>
+            <span class="v-line"></span>
+            <a target="__blank" href="#">自律公约</a>
+            <span class="v-line"></span>
+            <a target="__blank" href="#">联系我们</a>
+            <span class="v-line"></span>
+            <span id="year">2024 toutiao.com. All Rights Reserved</span>
+          </div>
+          <div class="footer-1">客服邮箱：mp@toutiao.com</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .page-container {
   .login-header.show-header {
     opacity: 1;
@@ -710,6 +1058,41 @@ const changePhoneContainer = (index) => {
         transition: width .35s ease;
       }
 
+      .group-source-item:hover:after {
+        width: 100%;
+        transition: width .35s ease;
+      }
+
+      .group-source-item:hover {
+        box-shadow: 0 10px 80px rgba(117, 131, 148, .24);
+        transform: translateY(-8px);
+      }
+
+      .group-source-item:hover .group-source-item-svg svg {
+        animation: shakeAnimation 0.5s ease-in-out forwards;
+      }
+
+      @keyframes shakeAnimation {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        25% {
+          transform: rotate(30deg);
+        }
+
+        50% {
+          transform: rotate(-30deg);
+        }
+
+        75% {
+          transform: rotate(30deg);
+        }
+
+        100% {
+          transform: rotate(0deg);
+        }
+      }
 
     }
   }
@@ -747,7 +1130,9 @@ const changePhoneContainer = (index) => {
       width: 1210px;
       margin: 0 auto;
       display: flex;
-      transform: translateX(94px);
+      // transform: translateX(94px); // 有一些bug
+      position: relative;
+      left: 94px;
 
       .distribute-platform-text {
         width: 522px;
@@ -798,7 +1183,7 @@ const changePhoneContainer = (index) => {
         }
 
         .distribute-platform-item:hover .distribute-platform-item-desc {
-          height: 50px;
+          height: 80px;
           opacity: 1;
         }
       }
@@ -835,36 +1220,396 @@ const changePhoneContainer = (index) => {
                 width: 100%;
                 height: 100%;
               }
-
-
             }
           }
-
-         
-
         }
       }
     }
 
-        .distribute-platform-phone-container {
-          transition: transform 0.3s ease;
-        }
-    
-        .distribute-platform-phone-container.toutiao {
-          transform: translateX(0);
-        }
-    
-        .distribute-platform-phone-container.xigua {
-          transform: translateX(-310px);
-        }
-    
-        .distribute-platform-phone-container.dongchedi {
-          transform: translateX(-620px);
-        }
-    
-        .distribute-platform-phone-container.wukong {
-          transform: translateX(-930px);
-        }
+    .distribute-platform-phone-container {
+      transition: transform 0.3s ease;
+    }
+
+    .distribute-platform-phone-container.toutiao {
+      transform: translateX(0);
+    }
+
+    .distribute-platform-phone-container.xigua {
+      transform: translateX(-310px);
+    }
+
+    .distribute-platform-phone-container.dongchedi {
+      transform: translateX(-620px);
+    }
+
+    .distribute-platform-phone-container.wukong {
+      transform: translateX(-930px);
+    }
   }
+
+  .service-plan {
+    padding-bottom: 120px;
+    position: relative;
+    opacity: 1;
+    margin-top: -40px;
+
+    .title {
+      line-height: 40px;
+      color: #222;
+      text-align: center;
+      font-size: 36px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-top: 20px;
+      text-align: center;
+      line-height: 24px;
+      font-size: 16px;
+      color: #666;
+    }
+
+    .plan-list {
+      margin: 52px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .swiper-container {
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      overflow: hidden;
+      list-style: none;
+      padding: 0;
+      z-index: 1;
+    }
+
+    .swiper-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: flex;
+      transition-property: transform;
+      box-sizing: content-box;
+    }
+
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: .3s;
+      transform: scale(.8);
+      flex-shrink: 0;
+      align-self: flex-start;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+
+    .swiper-slide.swiper-slide-active {
+      transform: scale(1);
+      cursor: auto;
+    }
+
+
+  }
+
+  .traffic-monetizing {
+    padding: 120px 0;
+    background-color: #fbfbfb;
+    opacity: 1;
+
+    .title {
+      line-height: 40px;
+      color: #222;
+      text-align: center;
+      font-size: 36px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-top: 20px;
+      text-align: center;
+      line-height: 24px;
+      font-size: 16px;
+      color: #666;
+    }
+
+    .traffic-monetizing-wrapper {
+      width: 1024px;
+      display: flex;
+      margin: 45px auto 0;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      .traffic-monetizing-item {
+        margin-top: 15px;
+        background: #fff;
+        border-radius: 8px;
+        width: 330px;
+        min-width: 330px;
+        height: 134px;
+        padding: 22px 20px 20px;
+        transition: box-shadow .35s ease, transform .35s ease;
+
+        .traffic-monetizing-item-flex {
+          display: flex;
+
+          .traffic-monetizing-item-title {
+            margin-left: 6px;
+            color: #222;
+            font-size: 16px;
+            line-height: 28px;
+            font-weight: 500;
+          }
+        }
+
+        .traffic-monetizing-item-desc {
+          margin-top: 8px;
+          margin-left: 34px;
+          font-size: 14px;
+          line-height: 20px;
+          color: #666;
+        }
+      }
+
+      .traffic-monetizing-item:hover {
+        box-shadow: 0 10px 80px rgba(117, 131, 148, .24);
+        transform: translateY(-8px);
+      }
+
+      .traffic-monetizing-item:hover .traffic-monetizing-item-flex svg {
+        animation: shakeAnimation 0.5s ease-in-out forwards;
+      }
+
+      @keyframes shakeAnimation {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        25% {
+          transform: rotate(30deg);
+        }
+
+        50% {
+          transform: rotate(-30deg);
+        }
+
+        75% {
+          transform: rotate(30deg);
+        }
+
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+    }
+  }
+
+  .top-author {
+    padding: 120px 0 687px;
+    position: relative;
+    opacity: 1;
+
+    .title {
+      line-height: 40px;
+      color: #222;
+      text-align: center;
+      font-size: 36px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-top: 20px;
+      text-align: center;
+      line-height: 24px;
+      font-size: 16px;
+      color: #666;
+    }
+
+    .icon-left {
+      left: calc(50% - 512px);
+    }
+
+    .switch-icon {
+      position: absolute;
+      bottom: 384px;
+      width: 41px;
+      height: 42px;
+      z-index: 2;
+      overflow: hidden;
+      border-radius: 100%;
+
+      svg {
+        position: relative;
+        top: -20px;
+        left: -41px;
+        cursor: pointer;
+      }
+    }
+
+    .switch-icon:hover {
+      box-shadow: 0 0 60px rgba(117, 131, 148, .28);
+    }
+
+    .icon-right {
+      right: calc(50% - 512px);
+    }
+
+    .content-wrapper {
+      position: absolute;
+      z-index: 1;
+      width: 100%;
+      height: 687px;
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+
+      .content.show-left {
+        -webkit-animation: showLeftPos .35s, showOpacity .7s;
+        animation: showLeftPos .35s, showOpacity .7s;
+        -webkit-animation-fill-mode: forwards;
+        animation-fill-mode: forwards;
+        -webkit-animation-timing-function: ease, cubic-bezier(.34, .69, .1, 1);
+        animation-timing-function: ease, cubic-bezier(.34, .69, .1, 1);
+      }
+
+      .content {
+        width: 1048px;
+        left: calc(50% - 524px);
+        opacity: 1;
+        position: absolute;
+        z-index: 1;
+
+        .author-item.first-line {
+          top: 60px;
+          z-index: 1;
+        }
+
+        .author-item.second-line {
+          top: 272px;
+        }
+
+        .author-item {
+          width: 132px;
+          display: inline-block;
+          position: absolute;
+          max-height: 168px;
+          transition: max-height 0ms linear .45s, width 0ms linear .45s, transform 0ms linear .45s, top .4s ease;
+          z-index: -1;
+        }
+
+        .author-item-bg {
+          position: absolute;
+          width: 100%;
+          max-height: 100%;
+          height: 100%;
+          opacity: 0;
+          border-radius: 8px;
+          box-shadow: 0 0 60px rgba(117, 131, 148, .16);
+          transition: opacity .4s ease;
+        }
+
+        .author-item-avatar {
+          display: block;
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          margin: 30px auto 16px;
+        }
+
+        .author-item-name {
+          color: #222;
+          font-size: 16px;
+          line-height: 24px;
+          text-align: center;
+        }
+
+        .author-item-desc {
+          color: #666;
+          font-size: 13px;
+          line-height: 20px;
+          margin-top: 20px;
+          padding: 0 20px 24px;
+          opacity: 0;
+          max-height: 0;
+          z-index: 1;
+          transition: max-height 0 linear .4s, opacity .4s ease;
+          overflow: hidden;
+          background-color: #fff;
+        }
+
+        .author-item:hover .author-item-bg {
+          opacity: 1;
+          transition: opacity .4s ease;
+        }
+
+        .author-item:hover {
+          width: 240px;
+          background: #fff;
+          max-height: 400px;
+          transform: translateX(-54px);
+          transition: max-height .4s ease, width 0ms linear, transform 0ms linear, top .4s ease;
+        }
+
+        .author-item.first-line:hover {
+          top: 52px;
+        }
+
+        .author-item:hover .author-item-desc {
+          max-height: 232px;
+          opacity: 1;
+          transition: max-height .4s ease, opacity .4s ease;
+        }
+
+        .author-item.second-line:hover {
+          top: 264px;
+        }
+      }
+
+      .content.hidden {
+        z-index: 0;
+        opacity: 1;
+      }
+
+      .welcome-footer {
+        text-align: center;
+        color: #222;
+        font-size: 12px;
+        line-height: 16px;
+        margin-top: 615px;
+        padding-top: 16px;
+        position: relative;
+
+        .footer-2 {
+          position: absolute;
+          top: 0;
+          width: 100%;
+
+          a {
+            color: #222;
+          }
+
+          .v-line {
+            margin: 0 12px;
+            background: #222;
+            width: 1px;
+            height: 10px;
+            display: inline-block;
+            transform: translateY(1px);
+          }
+        }
+
+        .footer-1 {
+          padding-top: 12px;
+        }
+      }
+    }
+  }
+
 }
 </style>
