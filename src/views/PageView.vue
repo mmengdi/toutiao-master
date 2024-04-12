@@ -7,6 +7,10 @@ import awemeUrl from '@/assets/images/base64/aweme-img.dataurl?raw'
 import qzoneUrl from '@/assets/images/base64/qzone-img.dataurl?raw'
 import weixinUrl from '@/assets/images/base64/weixin-img.dataurl?raw'
 import pwdUrl from '@/assets/images/base64/pwd-img.dataurl?raw'
+import closeUrl from '@/assets/images/base64/close-img.dataurl?raw'
+import loginFaqUrl from '@/assets/images/base64/login-faq-img.dataurl?raw'
+import mobileUrl from '@/assets/images/base64/mobile-img.dataurl?raw'
+import refreshUrl from '@/assets/images/base64/refresh-img.dataurl?raw'
 
 
 // 隐藏第一页的导航栏
@@ -38,6 +42,265 @@ const toggleMute = () => {
 };
 
 
+// 失效的二维码
+const isqrcodeError = ref(false);
+setTimeout(() => {
+  isqrcodeError.value = true;
+}, 60000);
+
+// 切换到登录问题
+const isLoginError = ref(false);
+
+// 账密登录
+const isAccountPwdLogin = ref(false);
+const pwdLogin = ref(false);
+const toggleLoginMethod = () => {
+  isAccountPwdLogin.value = !isAccountPwdLogin.value;
+  pwdLogin.value = !pwdLogin.value;
+}
+
+// 是否显示国家地区代码
+const isShowAreaCode = ref(false);
+const selectedArea = ref('+86');
+
+const toggleAreaCode = () => {
+  isShowAreaCode.value = !isShowAreaCode.value;
+}
+
+const areaCodes = [
+  { label: '中国', value: '+86' },
+  { label: '中国香港', value: '+852' },
+  { label: '中国澳门', value: '+853' },
+  { label: '中国台湾', value: '+886' },
+  { label: '阿尔巴尼亚', value: '+355' },
+  { label: '阿尔及利亚', value: '+213' },
+  { label: '阿富汗', value: '+93' },
+  { label: '阿根廷', value: '+54' },
+  { label: '阿拉伯联合酋长国', value: '+971' },
+  { label: '阿鲁巴岛', value: '+297' },
+  { label: '阿曼', value: '+968' },
+  { label: '阿塞拜疆', value: '+994' },
+  { label: '阿森松', value: '+247' },
+  { label: '埃及', value: '+20' },
+  { label: '埃塞俄比亚', value: '+251' },
+  { label: '爱尔兰', value: '+353' },
+  { label: '爱沙尼亚', value: '+372' },
+  { label: '安道尔', value: '+376' },
+  { label: '安哥拉', value: '+244' },
+  { label: '安圭拉', value: '+1264' },
+  { label: '安提瓜和巴布达', value: '+1268' },
+  { label: '奥地利', value: '+43' },
+  { label: '奥兰群岛', value: '+358' },
+  { label: '澳大利亚', value: '+61' },
+  { label: '巴巴多斯', value: '+1246' },
+  { label: '巴哈马', value: '+1242' },
+  { label: '巴基斯坦', value: '+92' },
+  { label: '巴拉圭', value: '+595' },
+  { label: '巴勒斯坦', value: '+970' },
+  { label: '巴林', value: '+973' },
+  { label: '巴拿马', value: '+507' },
+  { label: '巴西', value: '+55' },
+  { label: '白俄罗斯', value: '+375' },
+  { label: '百慕大', value: '+1441' },
+  { label: '保加利亚', value: '+359' },
+  { label: '北马里亚纳群岛', value: '+1670' },
+  { label: '贝宁', value: '+229' },
+  { label: '比利时', value: '+32' },
+  { label: '冰岛', value: '+354' },
+  { label: '波多黎各', value: '+1787' },
+  { label: '波黑', value: '+387' },
+  { label: '波兰', value: '+48' },
+  { label: '玻利维亚', value: '+591' },
+  { label: '伯利兹', value: '+501' },
+  { label: '博茨瓦纳', value: '+267' },
+  { label: '不丹', value: '+975' },
+  { label: '布基拉法索', value: '+226' },
+  { label: '布隆迪', value: '+257' },
+  { label: '朝鲜', value: '+850' },
+  { label: '赤道几内亚', value: '+240' },
+  { label: '丹麦', value: '+45' },
+  { label: '德国', value: '+49' },
+  { label: '多哥', value: '+228' },
+  { label: '多米尼加共和国', value: '+1809' },
+  { label: '多米尼克', value: '+1767' },
+  { label: '俄罗斯', value: '+7' },
+  { label: '厄瓜多尔', value: '+593' },
+  { label: '厄立特里亚', value: '+291' },
+  { label: '法国', value: '+33' },
+  { label: '法罗群岛', value: '+298' },
+  { label: '法属波利尼西亚', value: '+689' },
+  { label: '法属圭亚那', value: '+594' },
+  { label: '梵蒂冈', value: '+379' },
+  { label: '菲律宾', value: '+63' },
+  { label: '斐济', value: '+679' },
+  { label: '芬兰', value: '+358' },
+  { label: '佛得角', value: '+238' },
+  { label: '冈比亚', value: '+220' },
+  { label: '刚果', value: '+242' },
+  { label: '刚果民主共和国', value: '+243' },
+  { label: '哥伦比亚', value: '+57' },
+  { label: '哥斯达黎加', value: '+506' },
+  { label: '格林纳达', value: '+1473' },
+  { label: '格陵兰岛', value: '+299' },
+  { label: '格鲁吉亚', value: '+995' },
+  { label: '瓜德罗普', value: '+590' },
+  { label: '关岛', value: '+1671' },
+  { label: '圭亚那', value: '+592' },
+  { label: '海地', value: '+509' },
+  { label: '韩国', value: '+82' },
+  { label: '荷兰', value: '+31' },
+  { label: '荷属安的列斯', value: '+599' },
+  { label: '洪都拉斯', value: '+504' },
+  { label: '吉布提', value: '+253' },
+  { label: '加拿大', value: '+1' },
+  { label: '吉尔吉斯斯坦', value: '+996' },
+  { label: '几内亚', value: '+224' },
+  { label: '加那利群岛', value: '+3491' },
+  { label: '加纳', value: '+233' },
+  { label: '加蓬', value: '+241' },
+  { label: '柬埔寨', value: '+855' },
+  { label: '捷克', value: '+420' },
+  { label: '喀麦隆', value: '+237' },
+  { label: '卡塔尔', value: '+974' },
+  { label: '开曼群岛', value: '+1345' },
+  { label: '科摩罗', value: '+269' },
+  { label: '科索沃', value: '+883' },
+  { label: '科特迪瓦', value: '+225' },
+  { label: '科威特', value: '+965' },
+  { label: '克罗地亚', value: '+385' },
+  { label: '肯尼亚', value: '+254' },
+  { label: '拉脱维亚', value: '+371' },
+  { label: '莱索托', value: '+266' },
+  { label: '老挝', value: '+856' },
+  { label: '黎巴嫩', value: '+961' },
+  { label: '立陶宛', value: '+370' },
+  { label: '利比里亚', value: '+231' },
+  { label: '利比亚', value: '+218' },
+  { label: '列支敦士登', value: '+423' },
+  { label: '留尼旺岛', value: '+262' },
+  { label: '卢森堡', value: '+352' },
+  { label: '卢旺达', value: '+250' },
+  { label: '罗马尼亚', value: '+40' },
+  { label: '马达加斯加', value: '+261' },
+  { label: '马尔代夫', value: '+960' },
+  { label: '马耳他', value: '+356' },
+  { label: '马拉维', value: '+265' },
+  { label: '马来西亚', value: '+60' },
+  { label: '马里', value: '+223' },
+  { label: '马其顿', value: '+389' },
+  { label: '马绍尔群岛', value: '+692' },
+  { label: '马提尼克', value: '+596' },
+  { label: '马约特', value: '+262' },
+  { label: '毛里求斯', value: '+230' },
+  { label: '毛里塔尼亚', value: '+222' },
+  { label: '美国', value: '+1' },
+  { label: '美属萨摩亚', value: '+1684' },
+  { label: '美属维尔京群岛', value: '+1340' },
+  { label: '蒙古', value: '+976' },
+  { label: '蒙塞拉特岛', value: '+1664' },
+  { label: '蒙特內哥羅', value: '+382' },
+  { label: '孟加拉国', value: '+880' },
+  { label: '秘鲁', value: '+51' },
+  { label: '密克罗尼西亚联邦', value: '+691' },
+  { label: '缅甸', value: '+95' },
+  { label: '摩尔多瓦', value: '+373' },
+  { label: '摩洛哥', value: '+212' },
+  { label: '摩纳哥', value: '+377' },
+  { label: '莫桑比克', value: '+258' },
+  { label: '墨西哥', value: '+52' },
+  { label: '纳米比亚', value: '+264' },
+  { label: '南非', value: '+27' },
+  { label: '尼泊尔', value: '+977' },
+  { label: '尼加拉瓜', value: '+505' },
+  { label: '尼日尔', value: '+227' },
+  { label: '尼日利亚', value: '+234' },
+  { label: '挪威', value: '+47' },
+  { label: '帕劳', value: '+680' },
+  { label: '葡萄牙', value: '+351' },
+  { label: '千里达及托巴哥', value: '+1868' },
+  { label: '日本', value: '+81' },
+  { label: '瑞典', value: '+46' },
+  { label: '瑞士', value: '+41' },
+  { label: '圣诞岛', value: '+61' },
+  { label: '圣基茨和尼维斯', value: '+1869' },
+  { label: '圣卢西亚', value: '+1758' },
+  { label: '圣马力诺', value: '+223' },
+  { label: '圣皮埃尔和密克隆群岛', value: '+508' },
+  { label: '圣文森特和格林纳丁斯', value: '+1784' },
+  { label: '斯里兰卡', value: '+94' },
+  { label: '斯洛伐克', value: '+421' },
+  { label: '斯洛文尼亚', value: '+386' },
+  { label: '斯威士兰', value: '+268' },
+  { label: '苏丹', value: '+249' },
+  { label: '苏里南', value: '+597' },
+  { label: '索马里', value: '+252' },
+  { label: '塔吉克斯坦', value: '+992' },
+  { label: '沙特阿拉伯', value: '+966' },
+  { label: '塞舌尔', value: '+248' },
+  { label: '塞浦路斯', value: '+357' },
+  { label: '塞内加尔', value: '+221' },
+  { label: '塞拉利昂', value: '+232' },
+  { label: '塞尔维亚', value: '+381' },
+  { label: '萨尔瓦多', value: '+503' },
+  { label: '汤加', value: '+676' },
+  { label: '坦桑尼亚', value: '+255' },
+  { label: '泰国', value: '+66' },
+  { label: '特克斯和凯科斯群岛', value: '+1649' },
+  { label: '突尼斯', value: '+216' },
+  { label: '图瓦卢', value: '+688' },
+  { label: '土耳其', value: '+90' },
+  { label: '土库曼斯坦', value: '+993' },
+  { label: '乌兹别克斯坦', value: '+998' },
+  { label: '乌拉圭', value: '+598' },
+  { label: '乌克兰', value: '+380' },
+  { label: '乌干达', value: '+256' },
+  { label: '文莱', value: '+673' },
+  { label: '委内瑞拉', value: '+58' },
+  { label: '危地马拉', value: '+502' },
+  { label: '叙利亚', value: '+963' },
+  { label: '匈牙利', value: '+36' },
+  { label: '新西兰', value: '+64' },
+  { label: '新喀里多尼亚', value: '+687' },
+  { label: '新加坡', value: '+65' },
+  { label: '希腊', value: '+30' },
+  { label: '西萨摩亚', value: '+685' },
+  { label: '西撒哈拉', value: '+212' },
+  { label: '西班牙', value: '+34' },
+  { label: '越南', value: '+84' },
+  { label: '约旦', value: '+962' },
+  { label: '英属维尔京群岛', value: '+1284' },
+  { label: '英国', value: '+44' },
+  { label: '印度尼西亚', value: '+62' },
+  { label: '印度', value: '+91' },
+  { label: '意大利', value: '+39' },
+  { label: '以色列', value: '+972' },
+  { label: '伊朗', value: '+98' },
+  { label: '伊拉克', value: '+964' },
+  { label: '也门', value: '+967' },
+  { label: '亚美尼亚', value: '+374' },
+  { label: '牙买加', value: '+1876' },
+  { label: '中非', value: '+236' },
+  { label: '智利', value: '+56' },
+  { label: '直布罗陀', value: '+350' },
+  { label: '乍得', value: '+235' },
+  { label: '赞比亚', value: '+260' },
+
+];
+
+
+const selectAreaCode = (item: { label: string, value: string }) => {
+  selectedArea.value = item.value;
+}
+
+const closeAreaCode = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (!target.closest('.web-login-area-code__input-wrapper')) {
+    isShowAreaCode.value = false;
+  }
+}
+
+// 监听 document 的 click 事件，点击除了选择框之外的区域时关闭选择框
+document.addEventListener('click', closeAreaCode);
 
 
 // 滑动查看更多
@@ -146,10 +409,12 @@ onMounted(() => {
 
   window.addEventListener('scroll', handleScroll);
   animateScroll();
+
   // 当组件销毁时清除定时器
   onUnmounted(() => {
     clearInterval(scrollInterval);
     window.removeEventListener('scroll', handleScroll);
+    document.removeEventListener('click', closeAreaCode);
   });
 });
 
@@ -213,21 +478,35 @@ const toggleContent = (): void => {
           <article class="web-login">
             <article class="web-login-union">
               <div class="web-login-union__login">
-                <div class="web-login-union__login__form">
+                <!-- 验证码登录 -->
+                <div class="web-login-union__login__form" v-if="isAccountPwdLogin">
                   <div class="web-login-union__login__form__title">验证码登录</div>
                   <div class="web-login-union__login__form__content">
                     <article class="web-login-mobile-code">
                       <div class="web-login-mobile-code__mobile-input-wrapper">
                         <div class="web-login-normal-input">
                           <div class="web-login-area-code">
-                            <div class="web-login-area-code__input-wrapper">
+                            <div class="web-login-area-code__input-wrapper" @click="toggleAreaCode">
                               <input type="text" size="3" name="web-login-area-code-input"
                                 class="web-login-area-code__input-wrapper__input" autocomplete="off" role="combobox"
                                 tabindex="0" aria-owns="select-ul" aria-activedescendant="areacode_item_0"
-                                aria-label="国家/地区" value="+86">
+                                aria-label="国家/地区" v-model="selectedArea">
                               <i
                                 class="web-login-area-code__input-wrapper__icon-arrow web-login-area-code__input-wrapper__icon-arrow__down"></i>
                             </div>
+                            <div class="web-login-area-code__select-list-wrapper" v-if="isShowAreaCode">
+                              <ul id="select-ul" class="web-login-area-code__select-list-wrapper__list">
+                                <li v-for="(item, index) in areaCodes" :key="index"
+                                  class="web-login-area-code__select-list-wrapper__list__item"
+                                  :data-itemvalue="item.value" :id="'areacode_item_' + index"
+                                  @click="selectAreaCode(item)" tabindex="0" :aria-label="item.label + item.value"
+                                  :class="{ 'web-login-area-code__select-list-wrapper__list__item__active': selectedArea === item.value }">
+                                  <span>{{ item.label }}</span><span>{{ item.value }}</span>
+                                </li>
+                              </ul>
+                            </div>
+
+
                           </div>
                           <input name="normal-input" type="tel" class="web-login-normal-input__input" placeholder="手机号"
                             autocomplete="tel" maxlength="50" tabindex="0" aria-label="请输入手机号" value="">
@@ -265,18 +544,102 @@ const toggleContent = (): void => {
                     </article>
                   </div>
                 </div>
+                <!-- 帐密登录 -->
+                <div class="web-login-union__login__form" v-else>
+                  <div class="web-login-union__login__form__title">账密登录</div>
+                  <div class="web-login-union__login__form__content">
+                    <article class="web-login-account-password">
+                      <div class="web-login-account-password__account-input-wrapper">
+                        <div class="web-login-normal-input">
+                          <div class="web-login-area-code">
+                            <div class="web-login-area-code__input-wrapper" @click="toggleAreaCode">
+                              <input type="text" size="3" name="web-login-area-code-input"
+                                class="web-login-area-code__input-wrapper__input" autocomplete="off" role="combobox"
+                                tabindex="0" aria-owns="select-ul" aria-activedescendant="areacode_item_0"
+                                aria-label="国家/地区" v-model="selectedArea">
+                              <i
+                                class="web-login-area-code__input-wrapper__icon-arrow web-login-area-code__input-wrapper__icon-arrow__down"></i>
+                            </div>
+                            <div class="web-login-area-code__select-list-wrapper" v-if="isShowAreaCode">
+                              <ul id="select-ul" class="web-login-area-code__select-list-wrapper__list">
+                                <li v-for="(item, index) in areaCodes" :key="index"
+                                  class="web-login-area-code__select-list-wrapper__list__item"
+                                  :data-itemvalue="item.value" :id="'areacode_item_' + index"
+                                  @click="selectAreaCode(item)" tabindex="0" :aria-label="item.label + item.value"
+                                  :class="{ 'web-login-area-code__select-list-wrapper__list__item__active': selectedArea === item.value }">
+                                  <span>{{ item.label }}</span><span>{{ item.value }}</span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                          <input name="normal-input" type="text" class="web-login-normal-input__input"
+                            placeholder="手机号/邮箱" autocomplete="username" maxlength="50" tabindex="0"
+                            aria-label="请输入手机号或邮箱" value="">
+                        </div>
+                      </div>
+                      <div class="web-login-account-password__password-input-wrapper">
+                        <div class="web-login-button-input">
+                          <div class="web-login-button-input__input-wrapper"><input name="button-input" type="password"
+                              class="web-login-button-input__input" placeholder="密码" autocomplete="off" maxlength="20"
+                              tabindex="0" aria-label="请输入密码" value=""></div><span
+                            class="web-login-button-input__button-text" tabindex="0" aria-live="off"
+                            role="button">忘记密码</span>
+                        </div>
+                      </div>
+                      <div class="web-login-error" role="alert" aria-relevant="all" tabindex="0" aria-live="assertive"
+                        aria-atomic="true" aria-label="警告:无"></div>
+                      <div class="web-login-confirm-info" tabindex="0" aria-label="我已阅读并同意《用户协议》和《隐私政策》">
+                        <!-- <span
+                          class="web-login-confirm-info__checkbox web-login-confirm-info__checkbox__checked"
+                          role="checkbox" aria-checked="true" tabindex="0" aria-label="协议勾选框"></span> -->
+                        <el-checkbox class="web-login_checkbox" />
+                        <span class="web-login-confirm-info__before-text">我已阅读并同意</span>
+                        <a target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
+                          aria-label="《用户协议》">《用户协议》</a><span class="web-login-confirm-info__connect-text">和</span><a
+                          target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
+                          aria-label="《隐私政策》">《隐私政策》</a>
+                      </div>
+                      <div class="web-login-account-password__button-wrapper"><button type="submit"
+                          class="web-login-button web-login-button__disabled">登录</button></div>
+                    </article>
+                  </div>
+                </div>
+
+
                 <div class="web-login-union__login__scan-code">
                   <div class="web-login-union__login__scan-code__title">扫码登录</div>
                   <article class="web-login-scan-code">
-                    <div class="web-login-scan-code__content">
+                    <!-- 扫码 -->
+                    <div class="web-login-scan-code__content" v-if="!isqrcodeError">
                       <div
                         class="web-login-scan-code__content__qrcode-wrapper web-login-scan-code__content__qrcode-tip">
                         <img :src=qrcodeUrl class="web-login-scan-code__content__qrcode-wrapper__qrcode" tabindex="0"
                           aria-label="二维码">
                       </div>
-                      <p class="web-login-scan-desc">“今日头条App - 我的”<br>左上角“扫一扫”<span
-                          class="web-login-scan-desc__question"></span></p>
+                      <p class="web-login-scan-desc">“今日头条App - 我的”<br>左上角“扫一扫”
+                        <span class="web-login-scan-desc__question"></span>
+                      </p>
                     </div>
+                    <!-- 失效的二维码 -->
+                    <div class="web-login-scan-code__content" v-else>
+                      <div class="web-login-scan-code__content__qrcode-wrapper">
+                        <img :src=qrcodeUrl class="web-login-scan-code__content__qrcode-wrapper__qrcode" tabindex="0"
+                          aria-label="二维码">
+                        <div class="web-login-scan-code__content__qrcode-wrapper__mask" @click="isqrcodeError = false">
+                          <div class="web-login-scan-code__content__qrcode-wrapper__mask__toast">
+                            <p class="web-login-scan-code__content__qrcode-wrapper__mask__toast__icon refresh"
+                              :style="{ backgroundImage: 'url(' + refreshUrl + ')' }"></p>
+                            <p class="web-login-scan-code__content__qrcode-wrapper__mask__toast__text refresh">点击刷新二维码
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="web-login-scan-desc">二维码已失效
+                        <span class="web-login-scan-desc__btn" @click="isqrcodeError = false">点击刷新</span>
+                      </p>
+                    </div>
+
+
                   </article>
                 </div>
               </div>
@@ -299,10 +662,19 @@ const toggleContent = (): void => {
                         class="web-login-other-login-method__list__item__icon"></i>
                       <span>微信登录</span>
                     </li>
-                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="账密登录" role="button">
+                    <!-- 密码登录 -->
+                    <li v-if="pwdLogin" @click="toggleLoginMethod" class="web-login-other-login-method__list__item"
+                      tabindex="0" aria-label="账密登录" role="button">
                       <i :style="{ backgroundImage: `url(${pwdUrl})` }"
                         class="web-login-other-login-method__list__item__icon"></i>
                       <span>密码登录</span>
+                    </li>
+                    <!-- 手机登录 -->
+                    <li v-else @click="toggleLoginMethod" class="web-login-other-login-method__list__item" tabindex="0"
+                      aria-label="手机登录" role="button">
+                      <i :style="{ backgroundImage: `url(${mobileUrl})` }"
+                        class="web-login-other-login-method__list__item__icon"></i>
+                      <span>验证码登录</span>
                     </li>
                   </ul>
                 </div>
@@ -311,7 +683,17 @@ const toggleContent = (): void => {
                     <div class="web-login-link-list__item__text" tabindex="0" aria-label="立即注册" role="button">立即注册</div>
                   </li>
                   <li class="web-login-link-list__item">
-                    <div class="web-login-link-list__item__text" tabindex="0" aria-label="登录遇到问题" role="button">登录遇到问题
+                    <div class="web-login-link-list__item__modal" v-if="isLoginError">
+                      <div class="web-login-link-list__item__modal__icon-close"
+                        :style="{ backgroundImage: `url(${closeUrl})` }" @click="isLoginError = false"></div>
+                      <div class="web-login-faq">
+                        <p class="web-login-faq__title">登录遇到问题</p>
+                        <p class="web-login-faq__desc">请打开今日头条App “我的 - 登录 - 遇到问题” 查看</p>
+                        <div class="web-login-faq__img" :style="{ backgroundImage: `url(${loginFaqUrl})` }"></div>
+                      </div>
+                    </div>
+                    <div class="web-login-link-list__item__text" tabindex="0" aria-label="登录遇到问题" role="button"
+                      @click="isLoginError = true">登录遇到问题
                     </div>
                   </li>
                 </ul>
@@ -1362,6 +1744,11 @@ const toggleContent = (): void => {
       margin-top: 28px;
     }
 
+    .web-login .web-login-button-input:hover,
+    .web-login .web-login-normal-input:hover {
+      border: 1px solid #999;
+    }
+
     .web-login .web-login-button-input,
     .web-login .web-login-normal-input {
       height: 40px;
@@ -1591,6 +1978,88 @@ const toggleContent = (): void => {
       text-align: center;
     }
 
+    .web-login .web-login-account-password__account-input-wrapper {
+      margin-top: 28px;
+    }
+
+    .web-login .web-login-normal-input {
+      height: 40px;
+      line-height: 24px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+    }
+
+    .web-login .web-login-normal-input {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .web-login .web-login-account-password__password-input-wrapper,
+    .web-login .web-login-mobile-code__password-input-wrapper {
+      margin-top: 12px;
+    }
+
+    .web-login .web-login-account-password__button-wrapper,
+    .web-login .web-login-mobile-code__button-wrapper {
+      margin-top: 16px;
+    }
+
+    .web-login .web-login-area-code__select-list-wrapper {
+      position: absolute;
+      z-index: 100;
+      left: -16px;
+      top: 35px;
+      width: 233px;
+      max-height: 196px;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
+      background-color: #fff;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+
+    .web-login ul {
+      list-style: none;
+    }
+
+    .web-login ul {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-area-code__select-list-wrapper__list__item__active {
+      color: #f04142;
+    }
+
+    .web-login .web-login-area-code__select-list-wrapper__list__item {
+      padding: 7px 12px 7px 16px;
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .web-login .web-login-area-code__select-list-wrapper__list__item span:last-child {
+      color: #999;
+      float: right;
+    }
+
+
+    .web-login .web-login-area-code__select-list-wrapper__list__item:hover {
+      background-color: #f2f2f2;
+      cursor: pointer;
+    }
+
+
+
+
+
+
+
     .web-login .web-login-union__login__scan-code {
       border-left: 1px solid #e8e8e8;
     }
@@ -1668,11 +2137,87 @@ const toggleContent = (): void => {
       vertical-align: baseline;
     }
 
+
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper__mask {
+      left: -1px;
+      width: calc(100% + 2px);
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper__mask {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      background: hsla(0, 0%, 100%, .96);
+      cursor: pointer;
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper__mask__toast {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper__mask__toast {
+      width: 102px;
+      padding: 24px 0 22px;
+      border-radius: 8px;
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper__mask__toast__icon.refresh {
+      width: 56px;
+      height: 56px;
+      background-size: 56px 56px;
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper__mask__toast__icon {
+      display: block;
+      margin: 0 auto;
+      background-position: 50%;
+      background-repeat: no-repeat;
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper__mask__toast__text.refresh {
+      display: none;
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper__mask__toast__text {
+      text-align: center;
+      margin-top: 4px;
+      font-size: 12px;
+      line-height: 20px;
+      color: #222;
+    }
+
+    .web-login .web-login-scan-desc {
+      margin-top: 26px;
+      font-size: 12px;
+      line-height: 22px;
+      text-align: center;
+      color: #222;
+    }
+
     .web-login .web-login-scan-desc__btn {
       cursor: pointer;
       padding: 0 6px;
       word-break: keep-all;
       color: #0e408c;
+    }
+
+    .web-login .web-login-scan-desc__btn:hover {
+      color: #1a74ff;
+    }
+
+    .web-login .web-login-area-code__select-list-wrapper__list__item__active span:last-child {
+      color: #999;
+    }
+
+    .web-login .web-login-area-code__select-list-wrapper__list__item span:last-child {
+      float: right;
     }
 
     .web-login .web-login-union__footer {
@@ -1775,19 +2320,6 @@ const toggleContent = (): void => {
       color: #666;
     }
 
-    .web-login .web-login-other-login-method__list__item__icon__qzone_sns {
-      background-image: url(data:image/png;base64,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);
-    }
-
-
-    .web-login .web-login-other-login-method__list__item__icon__weixin {
-      background-image: url(data:image/png;base64,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);
-    }
-
-    .web-login .web-login-other-login-method__list__item__icon__account_pwd {
-      background-image: url(data:image/png;base64,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);
-    }
-
     .web-login .web-login-link-list {
       border-radius: 0 0 8px 8px;
     }
@@ -1883,9 +2415,75 @@ const toggleContent = (): void => {
     }
 
 
+    .web-login .web-login-link-list__item:last-child {
+      padding-right: 0;
+    }
 
+    .web-login .web-login-link-list__item__modal {
+      width: 100%;
+      border-radius: 8px;
+    }
 
+    .web-login .web-login-link-list__item__modal {
+      position: absolute;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      padding: 44px 56px 0;
+      min-height: 368px;
+      box-shadow: 0 2px 19px 0 rgba(0, 0, 0, .01);
+      border: 1px solid hsla(0, 0%, 91%, .56);
+      background-color: #fff;
+    }
 
+    .web-login .web-login-link-list__item__modal__icon-close {
+      width: 16px;
+      height: 16px;
+      left: 20px;
+      right: auto;
+      top: 22px;
+      background: no-repeat 50% / contain;
+    }
+
+    .web-login .web-login-link-list__item__modal__icon-close {
+      cursor: pointer;
+      position: absolute;
+    }
+
+    .web-login .web-login-link-list__item__modal__icon-close:after {
+      content: "返回登录";
+      position: absolute;
+      width: 56px;
+      left: 16px;
+      top: -2px;
+      font-size: 14px;
+      line-height: 20px;
+      color: #666;
+    }
+
+    .web-login .web-login-faq__title {
+      text-align: center;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: #222;
+    }
+
+    .web-login .web-login-faq__desc {
+      margin-top: 28px;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      color: #222;
+    }
+
+    .web-login .web-login-faq__img {
+      width: 320px;
+      height: 200px;
+      margin: 24px auto 0;
+      background: no-repeat 50% / contain;
+    }
 
     .first-screen-muted {
       position: absolute;
@@ -2562,5 +3160,12 @@ const toggleContent = (): void => {
     bottom: -102px;
     top: unset !important;
   }
+}
+
+
+.el-button.is-disabled,
+.el-button.is-disabled:hover {
+  background: #f5f5f5 !important;
+  color: #bfbfbf !important;
 }
 </style>
