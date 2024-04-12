@@ -17,18 +17,10 @@ const handleScroll = () => {
     showHeader.value = firstScreenBottom <= 0;
   }
 };
-// 点击按钮播放视频声音
+// 点击按钮播放视频
 const videoRef = ref<HTMLVideoElement | null>(null);
 const isMuted = ref<boolean>(true);
-// 点击静音图标切换有声音的图标
 const isSecondSvg = ref(false);
-// const toggleMute = () => {
-//   isSecondSvg.value = !isSecondSvg.value;
-//   if (videoRef.value) {
-//     videoRef.value.muted = !videoRef.value.muted;
-//     isMuted.value = videoRef.value.muted;
-//   }
-// };
 const toggleMute = () => {
   isSecondSvg.value = !isSecondSvg.value;
   if (videoRef.value) {
@@ -36,9 +28,8 @@ const toggleMute = () => {
       // 播放视频
       videoRef.value.play();
     } else {
-      // 停止视频并将播放头移到开头
       videoRef.value.pause();
-      videoRef.value.currentTime = 0;
+      // videoRef.value.currentTime = 0; // 停止视频并将播放头移到开头
     }
     // 切换静音状态
     videoRef.value.muted = isSecondSvg.value;
@@ -177,7 +168,13 @@ const toggleContent = () => {
 <template>
   <div class="page-container">
     <div class="login-header" :class="{ 'show-header': showHeader }">
-      <a class="logo" aria-label="今日头条徽标" href="/" rel="nofollow"></a>
+      <!-- <a class="logo" aria-label="今日头条徽标" href="/" rel="nofollow"></a> -->
+      <svg width="79" height="27" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M78.848 12.644v3.133H61.736l-.576 2.014h16.76v1.828l-1.669 7.233H59.375V23.45h13.581l.522-2.259H56.594v-1.7l1.063-3.715h-3.845v-3.133h25.036zM41.42 13.843v1.934h10.507v3.401H41.42v7.674h-4.08v-7.674H26.891v-3.401H37.34v-1.934h4.08zM18.104.85c-.101 7.245-.24 11.578-1.329 14.927h8.26v3.401h-9.898c-1.58 2.383-4.039 4.58-7.89 7.674H.968l.791-.625c3.87-3.053 6.53-5.151 8.334-7.049H0v-3.401h12.509c1.397-3.018 1.505-7.325 1.609-14.927h3.987zm3.06 20.029l3.867 5.973h-4.81l-3.867-5.973h4.81zm26.895 0l3.867 5.973h-4.811l-3.867-5.973h4.811zm-12.492 0l-3.866 5.973H26.89l3.866-5.973h4.811zM31.374 0l3.771 1.7h15.391v3.958c-1.14.987-2.862 2.413-5.857 3.91a89.124 89.124 0 007.248 1.468v3.63c-5.362-.847-9.447-1.862-12.608-2.907-3.2 1.074-7.255 2.09-12.428 2.904v-3.628a90.857 90.857 0 007.106-1.425c-2.22-1.1-3.65-2.124-4.73-2.898-.165-.118-1.678-1.256-1.678-1.256L31.374 0zM2.314 8.125l8.869 1.226v3.797L2.315 11.92V8.125zM77.365 1.7v8.93H55.295V1.7h22.07zm-31.91 3.4h-12.12c1.39.874 3.292 1.886 6.1 2.896 2.814-1.01 4.692-2.023 6.02-2.895zm27.83 0H59.375V7.23h13.91V5.102zm-70.97-3.4l8.869 1.226v3.797L2.315 5.497V1.7z"
+          fill="#fff">
+        </path>
+      </svg>
       <div class="btn-wrapper">
         <div class="register-btn">
           <el-popover placement="bottom" :width="200" trigger="hover" content="系统维护中，暂时无法注册">
@@ -249,9 +246,9 @@ const toggleContent = () => {
                         aria-atomic="true" aria-label="警告:无">
                       </div>
                       <div class="web-login-confirm-info" tabindex="0" aria-label="我已阅读并同意《用户协议》和《隐私政策》">
-                        <span class="web-login-confirm-info__checkbox" role="checkbox" aria-checked="false" tabindex="0"
-                          aria-label="协议勾选框"></span>
-                        <!-- <el-checkbox class="web-login_checkbox" /> -->
+                        <!-- <span class="web-login-confirm-info__checkbox" role="checkbox" aria-checked="false" tabindex="0"
+                          aria-label="协议勾选框"></span> -->
+                        <el-checkbox class="web-login_checkbox" />
 
                         <span class="web-login-confirm-info__before-text">我已阅读并同意</span>
                         <a target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
@@ -1252,6 +1249,15 @@ const toggleContent = () => {
       left: calc(50% - 512px);
     }
 
+    svg {
+      position: absolute;
+      top: 19px;
+      left: calc(50% - 512px);
+
+      path {
+        fill: #f04142;
+      }
+    }
 
     .btn-wrapper {
       position: absolute;
@@ -1530,7 +1536,7 @@ const toggleContent = () => {
 
     .web-login .web-login_checkbox {
       margin-right: 8px;
-      display: inline-block;
+      transform: translateY(2.5px);
     }
 
     .web-login span {
