@@ -1,39 +1,35 @@
 # toutiao-master
 
-This template should help get you started developing with Vue 3 in Vite.
+这个模板旨在帮助你开始使用Vue 3和Vite进行开发。
 
-## Recommended IDE Setup
+## 推荐的IDE设置
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)（同时禁用Vetur）。
 
-## Type Support for `.vue` Imports in TS
+## 在TS中为`.vue`导入提供类型支持
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+默认情况下，TypeScript无法处理`.vue`导入的类型信息，所以我们用`vue-tsc`替换`tsc` CLI来进行类型检查。在编辑器中，我们需要[Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)来使TypeScript语言服务能够识别`.vue`的类型。
 
-## Customize configuration
+## 自定义配置
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+请参阅[Vite配置参考](https://vitejs.dev/config/)。
 
-## Project Setup
+## 项目设置
 
 ```sh
 npm install
-```
 
-### Compile and Hot-Reload for Development
+## 开发环境下的编译和热重载
 
 ```sh
 npm run dev
-```
 
-### Type-Check, Compile and Minify for Production
+## 生产环境下进行类型检查、编译和压缩
 
 ```sh
 npm run build
-```
 
-### Lint with [ESLint](https://eslint.org/)
+## 使用ESLint进行代码 lint
 
 ```sh
 npm run lint
-```
