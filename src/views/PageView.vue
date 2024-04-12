@@ -14,17 +14,21 @@ import refreshUrl from '@/assets/images/base64/refresh-img.dataurl?raw'
 
 
 // 隐藏第一页的导航栏
-const showHeader = ref(false);
+const showHeader = ref<boolean>(false);
 const handleScroll = () => {
   const firstScreenBottom = document.querySelector('.first-screen')?.getBoundingClientRect().bottom;
   if (firstScreenBottom !== undefined) {
     showHeader.value = firstScreenBottom <= 0;
   }
 };
+
+// 登录表单
+const loginForm = ref<boolean>(false);
+
 // 点击按钮播放视频
 const videoRef = ref<HTMLVideoElement | null>(null);
 const isMuted = ref<boolean>(true);
-const isSecondSvg = ref(false);
+const isSecondSvg = ref<boolean>(false);
 const toggleMute = () => {
   isSecondSvg.value = !isSecondSvg.value;
   if (videoRef.value) {
@@ -43,24 +47,24 @@ const toggleMute = () => {
 
 
 // 失效的二维码
-const isqrcodeError = ref(false);
+const isqrcodeError = ref<boolean>(false);
 setTimeout(() => {
   isqrcodeError.value = true;
 }, 60000);
 
 // 切换到登录问题
-const isLoginError = ref(false);
+const isLoginError = ref<boolean>(false);
 
 // 账密登录
-const isAccountPwdLogin = ref(false);
-const pwdLogin = ref(false);
+const isAccountPwdLogin = ref<boolean>(false);
+const pwdLogin = ref<boolean>(false);
 const toggleLoginMethod = () => {
   isAccountPwdLogin.value = !isAccountPwdLogin.value;
   pwdLogin.value = !pwdLogin.value;
 }
 
 // 是否显示国家地区代码
-const isShowAreaCode = ref(false);
+const isShowAreaCode = ref<boolean>(false);
 const selectedArea = ref('+86');
 
 const toggleAreaCode = () => {
@@ -325,6 +329,21 @@ const scrollToNextPage = () => {
   }
 };
 
+
+// 重置密码
+const resetPwdLogin = ref<boolean>(false);
+const togglePassword = () => {
+  resetPwdLogin.value = !resetPwdLogin.value;
+  loginForm.value = !loginForm.value;
+};
+
+// 立即登录
+const toggleLogin = () => {
+  loginForm.value = !loginForm.value;
+  resetPwdLogin.value = !resetPwdLogin.value;
+};
+
+
 // 登录
 const login = () => {
   // 获取第一页元素
@@ -476,7 +495,7 @@ const toggleContent = (): void => {
       <div id="BD_Login_Form" class="login-wrap">
         <div class="web-login-container">
           <article class="web-login">
-            <article class="web-login-union">
+            <article class="web-login-union" v-if="!loginForm">
               <div class="web-login-union__login">
                 <!-- 验证码登录 -->
                 <div class="web-login-union__login__form" v-if="isAccountPwdLogin">
@@ -579,11 +598,13 @@ const toggleContent = (): void => {
                       </div>
                       <div class="web-login-account-password__password-input-wrapper">
                         <div class="web-login-button-input">
-                          <div class="web-login-button-input__input-wrapper"><input name="button-input" type="password"
-                              class="web-login-button-input__input" placeholder="密码" autocomplete="off" maxlength="20"
-                              tabindex="0" aria-label="请输入密码" value=""></div><span
-                            class="web-login-button-input__button-text" tabindex="0" aria-live="off"
-                            role="button">忘记密码</span>
+                          <div class="web-login-button-input__input-wrapper">
+                            <input name="button-input" type="password" class="web-login-button-input__input"
+                              placeholder="密码" autocomplete="off" maxlength="20" tabindex="0" aria-label="请输入密码"
+                              value="">
+                          </div>
+                          <span @click="togglePassword" class="web-login-button-input__button-text" tabindex="0"
+                            aria-live="off" role="button">忘记密码</span>
                         </div>
                       </div>
                       <div class="web-login-error" role="alert" aria-relevant="all" tabindex="0" aria-live="assertive"
@@ -699,6 +720,99 @@ const toggleContent = (): void => {
                 </ul>
               </div>
             </article>
+            <article class="web-login-password-reset" v-if="resetPwdLogin">
+              <article class="web-login-common-wrapper">
+                <div class="web-login-common-wrapper__tab">
+                  <ul class="web-login-tab-list">
+                    <li class="web-login-tab-list__item web-login-tab-list__item__active" tabindex="0" aria-label="重置密码"
+                      role="tab" aria-selected="true">重置密码</li>
+                  </ul>
+                </div>
+                <form class="web-login-common-wrapper__form">
+                  <div class="web-login-password-reset__account-input-wrapper">
+                    <div class="web-login-normal-input">
+                      <div class="web-login-area-code">
+                        <!-- <div class="web-login-area-code__input-wrapper">
+                          <input type="text" size="3" name="web-login-area-code-input"
+                            class="web-login-area-code__input-wrapper__input" autocomplete="off" role="combobox"
+                            tabindex="0" aria-owns="select-ul" aria-activedescendant="areacode_item_0"
+                            aria-label="国家/地区" value="+86">
+                          <i
+                            class="web-login-area-code__input-wrapper__icon-arrow web-login-area-code__input-wrapper__icon-arrow__down"></i>
+                        </div> -->
+                        <div class="web-login-area-code__input-wrapper" @click="toggleAreaCode">
+                          <input type="text" size="3" name="web-login-area-code-input"
+                            class="web-login-area-code__input-wrapper__input" autocomplete="off" role="combobox"
+                            tabindex="0" aria-owns="select-ul" aria-activedescendant="areacode_item_0"
+                            aria-label="国家/地区" v-model="selectedArea">
+                          <i
+                            class="web-login-area-code__input-wrapper__icon-arrow web-login-area-code__input-wrapper__icon-arrow__down"></i>
+                        </div>
+                        <div class="web-login-area-code__select-list-wrapper" v-if="isShowAreaCode">
+                          <ul id="select-ul" class="web-login-area-code__select-list-wrapper__list">
+                            <li v-for="(item, index) in areaCodes" :key="index"
+                              class="web-login-area-code__select-list-wrapper__list__item" :data-itemvalue="item.value"
+                              :id="'areacode_item_' + index" @click="selectAreaCode(item)" tabindex="0"
+                              :aria-label="item.label + item.value"
+                              :class="{ 'web-login-area-code__select-list-wrapper__list__item__active': selectedArea === item.value }">
+                              <span>{{ item.label }}</span><span>{{ item.value }}</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <input name="normal-input" type="text" class="web-login-normal-input__input" placeholder="手机号/邮箱"
+                        autocomplete="username" maxlength="50" tabindex="0" aria-label="请输入手机号或邮箱" value="">
+                    </div>
+                  </div>
+                  <div class="web-login-password-reset__new-password-input-wrapper">
+                    <div class="web-login-normal-input">
+                      <input name="normal-input" type="password" class="web-login-normal-input__input" placeholder="新密码"
+                        autocomplete="off" maxlength="20" tabindex="0" aria-label="请输入新密码" value="">
+                    </div>
+                  </div>
+                  <div class="web-login-password-reset__confirm-password-input-wrapper">
+                    <div class="web-login-normal-input">
+                      <input name="normal-input" type="password" class="web-login-normal-input__input"
+                        placeholder="密码确认" autocomplete="off" maxlength="20" tabindex="0" aria-label="请确认密码" value="">
+                    </div>
+                  </div>
+                  <div class="web-login-password-reset__code-input-wrapper">
+                    <div class="web-login-button-input">
+                      <span class="web-login-button-input__button-text send-input" tabindex="0" aria-live="off"
+                        role="button">获取验证码</span>
+                      <div class="web-login-button-input__input-wrapper send-input">
+                        <input name="button-input" type="text" class="web-login-button-input__input" placeholder="验证码"
+                          autocomplete="off" maxlength="50" tabindex="0" aria-label="请输入验证码" value="">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="web-login-error" role="alert" aria-relevant="all" tabindex="0" aria-live="assertive"
+                    aria-atomic="true" aria-label="警告:无"></div>
+                  <div class="web-login-password-reset__button-wrapper">
+                    <button type="submit" class="web-login-button web-login-button__disabled">提交</button>
+                  </div>
+                </form>
+                <ul class="web-login-link-list">
+                  <li class="web-login-link-list__item">
+                    <div class="web-login-link-list__item__text" tabindex="0" aria-label="立即注册" role="button">立即注册</div>
+                  </li>
+                  <li class="web-login-link-list__item">
+                    <div class="web-login-link-list__item__text" tabindex="0" aria-label="立即登录" role="button"
+                      @click="toggleLogin">立即登录</div>
+                  </li>
+                </ul>
+              </article>
+            </article>
+
+
+
+
+
+
+
+
+
+
           </article>
         </div>
       </div>
@@ -1879,11 +1993,6 @@ const toggleContent = (): void => {
       width: 100%;
     }
 
-    .web-login input {
-      outline: none;
-      box-shadow: none;
-      border: none;
-    }
 
     .web-login .web-login-error {
       color: #ff5e5e;
@@ -2484,6 +2593,323 @@ const toggleContent = (): void => {
       margin: 24px auto 0;
       background: no-repeat 50% / contain;
     }
+
+    .web-login .web-login-mobile-code-register,
+    .web-login .web-login-password-reset {
+      width: auto;
+      padding-top: 44px;
+    }
+
+    .web-login article {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-mobile-code-register .web-login-common-wrapper,
+    .web-login .web-login-password-reset .web-login-common-wrapper {
+      padding-bottom: 52px;
+    }
+
+    .web-login .web-login-common-wrapper {
+      min-height: 387px;
+    }
+
+    .web-login .web-login-common-wrapper {
+      width: 100%;
+    }
+
+    .web-login .web-login-mobile-code-register .web-login-common-wrapper__tab,
+    .web-login .web-login-password-reset .web-login-common-wrapper__tab {
+      padding: 0 56px;
+    }
+
+    .web-login .web-login-common-wrapper__tab {
+      display: flex;
+    }
+
+    .web-login .web-login-tab-list {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .web-login menu,
+    .web-login ol,
+    .web-login ul {
+      list-style: none;
+    }
+
+    .web-login .web-login-password-reset .web-login-tab-list__item__active {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: #222;
+    }
+
+    .web-login .web-login-password-reset .web-login-tab-list__item {
+      cursor: default;
+      position: relative;
+      line-height: 42px;
+    }
+
+    .web-login .web-login-mobile-code-register .web-login-common-wrapper__form,
+    .web-login .web-login-password-reset .web-login-common-wrapper__form {
+      padding: 0 56px;
+      box-sizing: content-box;
+    }
+
+    .web-login .web-login-common-wrapper__form {
+      width: 308px;
+    }
+
+    .web-login form {
+      margin: 0;
+      border: 0;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-password-reset__account-input-wrapper {
+      margin-top: 34px;
+    }
+
+    .web-login .web-login-button-input,
+    .web-login .web-login-normal-input {
+      height: 40px;
+      line-height: 24px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+    }
+
+    .web-login .web-login-normal-input {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .web-login .web-login-area-code {
+      display: flex;
+      height: 100%;
+      font-size: 14px;
+      line-height: 22px;
+      position: relative;
+      margin-right: 8px;
+    }
+
+    .web-login .web-login-area-code__input-wrapper {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    .web-login .web-login-area-code__input-wrapper__input {
+      min-width: 26px;
+      max-width: 42px;
+      height: 100%;
+      font-size: 14px;
+      line-height: 22px;
+      color: #222;
+      text-align: left;
+    }
+
+    .web-login input {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-area-code__input-wrapper__icon-arrow__down {
+      transform: rotate(0);
+      transition: transform .5s;
+    }
+
+    .web-login .web-login-area-code__input-wrapper__icon-arrow {
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACwSURBVHgB7dIxDoMwEETRjU+ahoJTBE5B4btayRREFrIibO9W+U9CUJn5AjMAAAAAAP7TwwblnF+llC2ltC3LstsAjzOSDdKLz7uGWKdzfH3WiJmAvXruiqjHX8/qNfwLyXEc+vzf4Xd+hdb4dV03GzQVID0R3uNlOkDuRESMF5cA+RURNV7cAqQVoXvUeHENkGtEzXu8uAdIKyJivIQESB0RNT7cJ+KpywAAAAAgwBtu2J1qNlDSQAAAAABJRU5ErkJggg==) no-repeat 50%;
+      background-size: 16px 16px;
+    }
+
+    .web-login .web-login-button-input__input,
+    .web-login .web-login-normal-input__input {
+      background: #fff;
+    }
+
+    .web-login .web-login-normal-input__input {
+      width: 100%;
+      height: 100%;
+      line-height: 100%;
+      font-size: 14px;
+    }
+
+    .web-login .web-login-password-reset .web-login-password-reset__new-password-input-wrapper {
+      margin-top: 12px;
+    }
+
+    .web-login .web-login-button-input,
+    .web-login .web-login-normal-input {
+      height: 40px;
+      line-height: 24px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+    }
+
+    .web-login .web-login-normal-input {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .web-login .web-login-password-reset__code-input-wrapper,
+    .web-login .web-login-password-reset__confirm-password-input-wrapper,
+    .web-login .web-login-password-reset__new-password-input-wrapper {
+      margin-top: 16px;
+    }
+
+    .web-login .web-login-button-input__button-text.send-input {
+      order: 2;
+    }
+
+    .web-login .web-login-button-input__button-text,
+    .web-login .web-login-normal-input__button-text {
+      font-size: 14px;
+    }
+
+    .web-login .web-login-button-input__button-text {
+      flex-shrink: 0;
+      line-height: 22px;
+      color: #222;
+      height: 22px;
+      cursor: pointer;
+    }
+
+    .web-login .web-login-button-input__input-wrapper.send-input {
+      order: 1;
+    }
+
+    .web-login .web-login-button-input__input-wrapper {
+      flex-grow: 1;
+    }
+
+
+    .web-login .web-login-error {
+      color: #ff5e5e;
+      height: 24px;
+      line-height: 24px;
+    }
+
+    .web-login .web-login-error {
+      width: 100%;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .web-login .web-login-password-reset__button-wrapper {
+      margin: 8px 0 44px;
+    }
+
+    .web-login .web-login-password-reset__button-wrapper {
+      margin-top: 10px;
+    }
+
+    .web-login .web-login-button {
+      height: 40px;
+      line-height: 40px;
+    }
+
+    .web-login .web-login-button__disabled {
+      background: rgba(240, 65, 66, .5);
+      color: #fff;
+      cursor: default;
+    }
+
+    .web-login .web-login-button {
+      width: 100%;
+      border: none;
+      outline: none;
+      border-radius: 4px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .web-login .web-login-mobile-code-register .web-login-link-list,
+    .web-login .web-login-password-reset .web-login-link-list {
+      display: flex;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: #fafafa;
+      padding: 0 56px;
+      justify-content: flex-end;
+      height: 52px;
+      align-items: center;
+      border-top: 1px solid hsla(0, 0%, 91%, .56);
+    }
+
+    .web-login .web-login-link-list {
+      border-radius: 0 0 8px 8px;
+    }
+
+    .web-login .web-login-link-list__item:first-child {
+      position: relative;
+    }
+
+    .web-login .web-login-link-list__item:first-child {
+      padding-left: 0;
+    }
+
+    .web-login .web-login-link-list__item {
+      padding: 0 16px;
+    }
+
+    .web-login .web-login-link-list__item:first-child .web-login-link-list__item__text {
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    .web-login .web-login-link-list__item__text {
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+
+    .web-login .web-login-link-list__item:last-child {
+      padding-right: 0;
+    }
+
+    .web-login .web-login-link-list__item {
+      padding: 0 16px;
+    }
+
+    .web-login .web-login-link-list__item__text {
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 18px;
+      color: #666;
+    }
+
+    .web-login .web-login-link-list__item:not(:first-child):after {
+      content: "";
+      position: absolute;
+      width: 1px;
+      height: 8px;
+      background: #d8d8d8;
+      transform: translate(-16px, -13px);
+    }
+
+
+
+
+
+
+
 
     .first-screen-muted {
       position: absolute;
