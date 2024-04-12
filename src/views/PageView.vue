@@ -155,12 +155,14 @@ onMounted(() => {
 
 
 // top-author切换
-const content = ref('content1');
+// 声明一个 ref 变量，并指定其类型为 string
+const content = ref<string>('content1');
 
-const toggleContent = () => {
+// 声明 toggleContent 函数，不接受参数，不返回任何值
+const toggleContent = (): void => {
+  // 切换 content 的值为 'content1' 或 'content2'
   content.value = content.value === 'content1' ? 'content2' : 'content1';
 };
-
 
 
 </script>
@@ -334,7 +336,7 @@ const toggleContent = () => {
             p-id="15583" data-spm-anchor-id="a313x.search_index.0.i6.d3ed3a81T9mL78" width="32" height="32">
             <path
               d="M512 0a512 512 0 0 1 512 512 512 512 0 1 1-512-512z m-64 320h-128v384h128v-384z m256 0h-128v384h128v-384z"
-              fill="#6a6f71" p-id="15584"></path>
+              fill="#ede7f2" p-id="15584"></path>
           </svg>
         </template>
         <template v-else>
@@ -352,14 +354,14 @@ const toggleContent = () => {
             p-id="24586" width="32" height="32">
             <path
               d="M512 0C230.4 0 0 230.4 0 512s230.4 512 512 512 512-230.4 512-512C1024 227.84 793.6 0 512 0z m217.6 552.96L422.4 739.84c-2.56 2.56-7.68 2.56-12.8 2.56s-7.68 0-12.8-2.56c-7.68-5.12-12.8-12.8-12.8-23.04v-384c0-5.12 0-10.24 5.12-15.36 7.68-12.8 23.04-15.36 35.84-7.68l307.2 197.12c7.68 5.12 12.8 12.8 12.8 23.04-2.56 10.24-7.68 17.92-15.36 23.04z"
-              p-id="24587" fill="#6a6f71"></path>
+              p-id="24587" fill="#ede7f2"></path>
           </svg>
         </template>
       </div>
       <div class="first-screen-mouse-hint">滑动查看更多</div>
       <div class="first-screen-mouse" ref="mouseRef" @click="scrollToNextPage">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36"
-          preserveAspectRatio="xMidYMid meet" style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px);">
+          preserveAspectRatio="xMidYMid meet">
           <defs>
             <clipPath id="__lottie_element_160">
               <rect width="36" height="36" x="0" y="0"></rect>
@@ -1674,6 +1676,11 @@ const toggleContent = () => {
     }
 
     .web-login .web-login-union__footer {
+      background: #fafafa;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .web-login .web-login-union__footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -1900,13 +1907,22 @@ const toggleContent = () => {
       line-height: 20px;
     }
 
+    // .first-screen-mouse {
+    //   width: 28px;
+    //   height: 31px;
+    //   position: absolute;
+    //   bottom: 32px;
+    //   left: 50%;
+    //   transform: translateX(-50%);
+    // }
     .first-screen-mouse {
       width: 28px;
       height: 31px;
       position: absolute;
       bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 0;
+      right: 0;
+      margin: 0 auto;
       cursor: pointer;
     }
   }
