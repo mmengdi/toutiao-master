@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { ElNotification } from 'element-plus'
 import type { TabsPaneContext } from 'element-plus'
 import vSlideIn from '@/utils/vSlideIn'
+import qrcodeUrl from '@/assets/images/base64/qrcode-img.dataurl?raw'
+import awemeUrl from '@/assets/images/base64/aweme-img.dataurl?raw'
+import qzoneUrl from '@/assets/images/base64/qzone-img.dataurl?raw'
+import weixinUrl from '@/assets/images/base64/weixin-img.dataurl?raw'
+import pwdUrl from '@/assets/images/base64/pwd-img.dataurl?raw'
+
 
 // 隐藏第一页的导航栏
 const showHeader = ref(false);
@@ -17,13 +22,32 @@ const videoRef = ref<HTMLVideoElement | null>(null);
 const isMuted = ref<boolean>(true);
 // 点击静音图标切换有声音的图标
 const isSecondSvg = ref(false);
+// const toggleMute = () => {
+//   isSecondSvg.value = !isSecondSvg.value;
+//   if (videoRef.value) {
+//     videoRef.value.muted = !videoRef.value.muted;
+//     isMuted.value = videoRef.value.muted;
+//   }
+// };
 const toggleMute = () => {
   isSecondSvg.value = !isSecondSvg.value;
   if (videoRef.value) {
-    videoRef.value.muted = !videoRef.value.muted;
-    isMuted.value = videoRef.value.muted;
+    if (!isSecondSvg.value) {
+      // 播放视频
+      videoRef.value.play();
+    } else {
+      // 停止视频并将播放头移到开头
+      videoRef.value.pause();
+      videoRef.value.currentTime = 0;
+    }
+    // 切换静音状态
+    videoRef.value.muted = isSecondSvg.value;
+    isMuted.value = isSecondSvg.value;
   }
 };
+
+
+
 
 // 滑动查看更多
 const mouseRef = ref<HTMLElement | null>(null);
@@ -49,12 +73,21 @@ const scrollToNextPage = () => {
 
 // 登录
 const login = () => {
-  ElNotification({
-    title: '恭喜您',
-    message: '登录成功！',
-    type: 'success',
-  })
-}
+  // 获取第一页元素
+  const firstScreen = document.querySelector('.first-screen');
+
+  // 如果存在第一页元素，则滚动到该元素处
+  if (firstScreen) {
+    // 计算第一页元素相对于视口顶部的距离
+    const scrollTop = firstScreen.getBoundingClientRect().top + window.scrollY;
+
+    // 平滑滚动到第一页元素处
+    window.scrollTo({
+      top: scrollTop,
+      behavior: 'smooth' // 平滑过渡
+    });
+  }
+};
 
 // 内容多平台分发 视频动画
 const currentHoverIndex = ref<number | null>(null);
@@ -188,36 +221,48 @@ const toggleContent = () => {
                       <div class="web-login-mobile-code__mobile-input-wrapper">
                         <div class="web-login-normal-input">
                           <div class="web-login-area-code">
-                            <div class="web-login-area-code__input-wrapper"><input type="text" size="3"
-                                name="web-login-area-code-input" class="web-login-area-code__input-wrapper__input"
-                                autocomplete="off" role="combobox" tabindex="0" aria-owns="select-ul"
-                                aria-activedescendant="areacode_item_0" aria-label="国家/地区" value="+86"><i
+                            <div class="web-login-area-code__input-wrapper">
+                              <input type="text" size="3" name="web-login-area-code-input"
+                                class="web-login-area-code__input-wrapper__input" autocomplete="off" role="combobox"
+                                tabindex="0" aria-owns="select-ul" aria-activedescendant="areacode_item_0"
+                                aria-label="国家/地区" value="+86">
+                              <i
                                 class="web-login-area-code__input-wrapper__icon-arrow web-login-area-code__input-wrapper__icon-arrow__down"></i>
                             </div>
-                          </div><input name="normal-input" type="tel" class="web-login-normal-input__input"
-                            placeholder="手机号" autocomplete="tel" maxlength="50" tabindex="0" aria-label="请输入手机号"
-                            value="">
+                          </div>
+                          <input name="normal-input" type="tel" class="web-login-normal-input__input" placeholder="手机号"
+                            autocomplete="tel" maxlength="50" tabindex="0" aria-label="请输入手机号" value="">
                         </div>
                       </div>
                       <div class="web-login-mobile-code__code-input-wrapper">
-                        <div class="web-login-button-input"><span class="web-login-button-input__button-text send-input"
-                            tabindex="0" aria-live="off" role="button">获取验证码</span>
-                          <div class="web-login-button-input__input-wrapper send-input"><input name="button-input"
-                              type="tel" class="web-login-button-input__input" placeholder="验证码" autocomplete="off"
-                              maxlength="50" tabindex="0" aria-label="请输入验证码" value=""></div>
+                        <div class="web-login-button-input">
+                          <span class="web-login-button-input__button-text send-input" tabindex="0" aria-live="off"
+                            role="button">获取验证码</span>
+                          <div class="web-login-button-input__input-wrapper send-input">
+                            <input name="button-input" type="tel" class="web-login-button-input__input"
+                              placeholder="验证码" autocomplete="off" maxlength="50" tabindex="0" aria-label="请输入验证码"
+                              value="">
+                          </div>
                         </div>
                       </div>
                       <div class="web-login-error" role="alert" aria-relevant="all" tabindex="0" aria-live="assertive"
-                        aria-atomic="true" aria-label="警告:无"></div>
-                      <div class="web-login-confirm-info" tabindex="0" aria-label="我已阅读并同意《用户协议》和《隐私政策》"><span
-                          class="web-login-confirm-info__checkbox" role="checkbox" aria-checked="false" tabindex="0"
-                          aria-label="协议勾选框"></span><span class="web-login-confirm-info__before-text">我已阅读并同意</span><a
-                          target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
-                          aria-label="《用户协议》">《用户协议》</a><span class="web-login-confirm-info__connect-text">和</span><a
-                          target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
-                          aria-label="《隐私政策》">《隐私政策》</a></div>
-                      <div class="web-login-mobile-code__button-wrapper"><button type="submit"
-                          class="web-login-button web-login-button__disabled">登录</button></div>
+                        aria-atomic="true" aria-label="警告:无">
+                      </div>
+                      <div class="web-login-confirm-info" tabindex="0" aria-label="我已阅读并同意《用户协议》和《隐私政策》">
+                        <span class="web-login-confirm-info__checkbox" role="checkbox" aria-checked="false" tabindex="0"
+                          aria-label="协议勾选框"></span>
+                        <!-- <el-checkbox class="web-login_checkbox" /> -->
+
+                        <span class="web-login-confirm-info__before-text">我已阅读并同意</span>
+                        <a target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
+                          aria-label="《用户协议》">《用户协议》</a>
+                        <span class="web-login-confirm-info__connect-text">和</span>
+                        <a target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
+                          aria-label="《隐私政策》">《隐私政策》</a>
+                      </div>
+                      <div class="web-login-mobile-code__button-wrapper">
+                        <button type="submit" class="web-login-button web-login-button__disabled">登录</button>
+                      </div>
                     </article>
                   </div>
                 </div>
@@ -225,18 +270,13 @@ const toggleContent = () => {
                   <div class="web-login-union__login__scan-code__title">扫码登录</div>
                   <article class="web-login-scan-code">
                     <div class="web-login-scan-code__content">
-                      <div class="web-login-scan-code__content__qrcode-wrapper">
-                        <img alt="" src="@/assets/images/web-login-scan-code.png"
-                          class="web-login-scan-code__content__qrcode-wrapper__qrcode" tabindex="0" aria-label="二维码">
-                        <div class="web-login-scan-code__content__qrcode-wrapper__mask">
-                          <div class="web-login-scan-code__content__qrcode-wrapper__mask__toast">
-                            <p class="web-login-scan-code__content__qrcode-wrapper__mask__toast__icon refresh"></p>
-                            <p class="web-login-scan-code__content__qrcode-wrapper__mask__toast__text refresh">点击刷新二维码
-                            </p>
-                          </div>
-                        </div>
+                      <div
+                        class="web-login-scan-code__content__qrcode-wrapper web-login-scan-code__content__qrcode-tip">
+                        <img :src=qrcodeUrl class="web-login-scan-code__content__qrcode-wrapper__qrcode" tabindex="0"
+                          aria-label="二维码">
                       </div>
-                      <p class="web-login-scan-desc">二维码已失效<span class="web-login-scan-desc__btn">点击刷新</span></p>
+                      <p class="web-login-scan-desc">“今日头条App - 我的”<br>左上角“扫一扫”<span
+                          class="web-login-scan-desc__question"></span></p>
                     </div>
                   </article>
                 </div>
@@ -245,17 +285,25 @@ const toggleContent = () => {
                 <div class="web-login-other-login-method">
                   <div class="web-login-other-login-method__text">其他登录方式</div>
                   <ul class="web-login-other-login-method__list">
-                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="抖音登录" role="button"><i
-                        class="web-login-other-login-method__list__item__icon web-login-other-login-method__list__item__icon__aweme"></i><span>抖音登录</span>
+                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="抖音登录" role="button">
+                      <i :style="{ backgroundImage: `url(${awemeUrl})` }"
+                        class="web-login-other-login-method__list__item__icon"></i>
+                      <span>抖音登录</span>
                     </li>
-                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="QQ登录" role="button"><i
-                        class="web-login-other-login-method__list__item__icon web-login-other-login-method__list__item__icon__qzone_sns"></i><span>QQ登录</span>
+                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="QQ登录" role="button">
+                      <i :style="{ backgroundImage: `url(${qzoneUrl})` }"
+                        class="web-login-other-login-method__list__item__icon"></i>
+                      <span>QQ登录</span>
                     </li>
-                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="微信登录" role="button"><i
-                        class="web-login-other-login-method__list__item__icon web-login-other-login-method__list__item__icon__weixin"></i><span>微信登录</span>
+                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="微信登录" role="button">
+                      <i :style="{ backgroundImage: `url(${weixinUrl})` }"
+                        class="web-login-other-login-method__list__item__icon"></i>
+                      <span>微信登录</span>
                     </li>
-                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="账密登录" role="button"><i
-                        class="web-login-other-login-method__list__item__icon web-login-other-login-method__list__item__icon__account_pwd"></i><span>密码登录</span>
+                    <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="账密登录" role="button">
+                      <i :style="{ backgroundImage: `url(${pwdUrl})` }"
+                        class="web-login-other-login-method__list__item__icon"></i>
+                      <span>密码登录</span>
                     </li>
                   </ul>
                 </div>
@@ -275,23 +323,39 @@ const toggleContent = () => {
       </div>
       <div class="first-screen-muted" @click="toggleMute">
         <template v-if="!isSecondSvg">
-          <svg width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 暂停 -->
+          <!-- <svg width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="16" cy="16" r="16" fill="#fff" fill-opacity="0.3"></circle>
             <path clip-rule="evenodd"
               d="M17.352 8.843a.565.565 0 01.103.324v13.666a.566.566 0 01-.89.463l-4.09-3.186a3.394 3.394 0 00-2.086-.716H8.404a1.131 1.131 0 01-1.131-1.131v-4.526c0-.624.506-1.13 1.131-1.13l1.986-.001c.755 0 1.489-.252 2.085-.716l4.09-3.186a.566.566 0 01.787.139z"
               stroke="#fff" stroke-width="1.4"></path>
             <path d="M20.488 13.943l4.114 4.114M24.602 13.943l-4.114 4.114" stroke="#fff" stroke-width="1.4"
               stroke-linecap="round"></path>
+          </svg> -->
+          <!-- 暂停 -->
+          <svg t="1712889439118" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            p-id="15583" data-spm-anchor-id="a313x.search_index.0.i6.d3ed3a81T9mL78" width="32" height="32">
+            <path
+              d="M512 0a512 512 0 0 1 512 512 512 512 0 1 1-512-512z m-64 320h-128v384h128v-384z m256 0h-128v384h128v-384z"
+              fill="#6a6f71" p-id="15584"></path>
           </svg>
         </template>
         <template v-else>
-          <svg width="33" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 播放 -->
+          <!-- <svg width="33" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="16" cy="16" r="16" fill="#fff" fill-opacity="0.3"></circle>
             <path clip-rule="evenodd"
               d="M17.443 8.843a.565.565 0 01.102.324v13.666a.566.566 0 01-.89.463l-4.09-3.186a3.394 3.394 0 00-2.085-.716H8.495a1.131 1.131 0 01-1.132-1.131v-4.526c0-.624.507-1.13 1.132-1.13l1.985-.001c.756 0 1.49-.252 2.085-.716l4.09-3.186a.566.566 0 01.788.139z"
               stroke="#fff" stroke-width="1.4"></path>
             <path d="M21.563 20a5.978 5.978 0 001.527-4 5.978 5.978 0 00-1.527-4" stroke="#fff" stroke-width="1.4">
             </path>
+          </svg> -->
+          <!-- 播放 -->
+          <svg t="1712889738526" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            p-id="24586" width="32" height="32">
+            <path
+              d="M512 0C230.4 0 0 230.4 0 512s230.4 512 512 512 512-230.4 512-512C1024 227.84 793.6 0 512 0z m217.6 552.96L422.4 739.84c-2.56 2.56-7.68 2.56-12.8 2.56s-7.68 0-12.8-2.56c-7.68-5.12-12.8-12.8-12.8-23.04v-384c0-5.12 0-10.24 5.12-15.36 7.68-12.8 23.04-15.36 35.84-7.68l307.2 197.12c7.68 5.12 12.8 12.8 12.8 23.04-2.56 10.24-7.68 17.92-15.36 23.04z"
+              p-id="24587" fill="#6a6f71"></path>
           </svg>
         </template>
       </div>
@@ -331,7 +395,6 @@ const toggleContent = () => {
         </svg>
       </div>
     </div>
-
 
     <div class="group-source show-content" v-slide-in>
       <div class="title">支持丰富的创作体裁</div>
@@ -784,6 +847,7 @@ const toggleContent = () => {
       </div>
 
     </div>
+
     <div class="distribute-platform show-content" v-slide-in>
       <div class="title">内容多平台分发</div>
       <div class="subtitle">粉丝数据全面打通，多渠道涨粉，全平台共享</div>
@@ -1261,97 +1325,551 @@ const toggleContent = () => {
       font-family: PingFang SC;
       background-color: #fff;
     }
-.web-login article {
-  display: block;
-}
-.web-login .web-login-union__login {
-  display: flex;
-  padding: 40px 0 44px;
-}
-.web-login .web-login-union__login__form {
-  padding: 0 48px 0 40px;
-}
 
-.web-login .web-login-union__login__form__title {
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
-  color: #222;
-}
-.web-login .web-login-union__login__form__content {
-  width: 308px;
-}
-.web-login .web-login-mobile-code__mobile-input-wrapper {
-  margin-top: 28px;
-}
+    .web-login article {
+      display: block;
+    }
 
-.web-login .web-login-button-input,
-.web-login .web-login-normal-input {
-  height: 40px;
-  line-height: 24px;
-  padding: 8px 10px;
-  border-radius: 4px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
-}
+    .web-login .web-login-union__login {
+      display: flex;
+      padding: 40px 0 44px;
+    }
 
-.web-login .web-login-normal-input {
-  display: flex;
-  width: 100%;
-  box-sizing: border-box;
-}
+    .web-login .web-login-union__login__form {
+      padding: 0 48px 0 40px;
+    }
 
-.web-login .web-login-area-code {
-  display: flex;
-  height: 100%;
-  font-size: 14px;
-  line-height: 22px;
-  position: relative;
-  margin-right: 8px;
-}
-.web-login .web-login-area-code__input-wrapper {
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-.web-login .web-login-area-code__input-wrapper__input {
-  min-width: 26px;
-  max-width: 42px;
-  height: 100%;
-  font-size: 14px;
-  line-height: 22px;
-  color: #222;
-  text-align: left;
-}
-.web-login input {
-  outline: none;
-  box-shadow: none;
-  background-color: transparent;
-  border: none;
-}
-.web-login .web-login-area-code__input-wrapper__icon-arrow__down {
-  transform: rotate(0);
-  transition: transform .5s;
-}
+    .web-login .web-login-union__login__form__title {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: #222;
+    }
 
-.web-login .web-login-area-code__input-wrapper__icon-arrow {
-  display: block;
-  width: 16px;
-  height: 16px;
-  background: url("@/assets/images/arrow.png") no-repeat 50%;
-  background-size: 16px 16px;
-}
-.web-login .web-login-button-input__input,
-.web-login .web-login-normal-input__input {
-  background: #fff;
-}
+    .web-login .web-login-union__login__form__content {
+      width: 308px;
+    }
 
-.web-login .web-login-normal-input__input {
-    width: 100%;
-    height: 100%;
-    line-height: 100%;
-    font-size: 14px;
-}
+    .web-login .web-login-mobile-code__mobile-input-wrapper {
+      margin-top: 28px;
+    }
+
+    .web-login .web-login-button-input,
+    .web-login .web-login-normal-input {
+      height: 40px;
+      line-height: 24px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+    }
+
+    .web-login .web-login-normal-input {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .web-login .web-login-area-code {
+      display: flex;
+      height: 100%;
+      font-size: 14px;
+      line-height: 22px;
+      position: relative;
+      margin-right: 8px;
+    }
+
+    .web-login .web-login-area-code__input-wrapper {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    .web-login .web-login-area-code__input-wrapper__input {
+      min-width: 26px;
+      max-width: 42px;
+      height: 100%;
+      font-size: 14px;
+      line-height: 22px;
+      color: #222;
+      text-align: left;
+    }
+
+    .web-login input {
+      outline: none;
+      box-shadow: none;
+      background-color: transparent;
+      border: none;
+    }
+
+    .web-login .web-login-area-code__input-wrapper__icon-arrow__down {
+      transform: rotate(0);
+      transition: transform .5s;
+    }
+
+    .web-login .web-login-area-code__input-wrapper__icon-arrow {
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: url("@/assets/images/arrow.png") no-repeat 50%;
+      background-size: 16px 16px;
+    }
+
+    .web-login .web-login-button-input__input,
+    .web-login .web-login-normal-input__input {
+      background: #fff;
+    }
+
+    .web-login .web-login-normal-input__input {
+      width: 100%;
+      height: 100%;
+      line-height: 100%;
+      font-size: 14px;
+    }
+
+    .web-login .web-login-mobile-code__code-input-wrapper {
+      margin-top: 12px;
+    }
+
+    .web-login .web-login-button-input {
+      height: 40px;
+      line-height: 24px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+    }
+
+    .web-login .web-login-button-input {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .web-login .web-login-button-input__button-text.send-input {
+      order: 2;
+    }
+
+    .web-login .web-login-button-input__button-text,
+    .web-login .web-login-normal-input__button-text {
+      font-size: 14px;
+    }
+
+    .web-login .web-login-button-input__button-text {
+      flex-shrink: 0;
+      line-height: 22px;
+      color: #222;
+      height: 22px;
+      cursor: pointer;
+    }
+
+    .web-login .web-login-button-input__input-wrapper.send-input {
+      order: 1;
+    }
+
+    .web-login .web-login-button-input__input-wrapper {
+      flex-grow: 1;
+    }
+
+    .web-login .web-login-button-input__input,
+    .web-login .web-login-normal-input__input {
+      background: #fff;
+    }
+
+    .web-login .web-login-button-input__input {
+      height: 100%;
+      line-height: 100%;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    .web-login input {
+      outline: none;
+      box-shadow: none;
+      border: none;
+    }
+
+    .web-login .web-login-error {
+      color: #ff5e5e;
+      height: 24px;
+      line-height: 24px;
+    }
+
+    .web-login .web-login-error {
+      width: 100%;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .web-login .web-login-confirm-info {
+      font-size: 12px;
+      line-height: 20px;
+      user-select: none;
+      outline: none;
+    }
+
+    .web-login div {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-confirm-info__checkbox {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      border-radius: 2px;
+      border: 1px solid #d9d9d9;
+      vertical-align: text-bottom;
+      cursor: pointer;
+    }
+
+    .web-login .web-login_checkbox {
+      margin-right: 8px;
+      display: inline-block;
+    }
+
+    .web-login span {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .web-login .web-login-confirm-info__info {
+      margin: 0;
+    }
+
+    .web-login .web-login-confirm-info__info {
+      color: #222;
+    }
+
+    .web-login a {
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-confirm-info__connect-text,
+    .web-login .web-login-confirm-info__info:hover {
+      color: #666;
+    }
+
+    .web-login .web-login-mobile-code__button-wrapper {
+      margin-top: 16px;
+    }
+
+    .web-login .web-login-button {
+      height: 40px;
+      line-height: 40px;
+    }
+
+    .web-login .web-login-button__disabled {
+      background: rgba(240, 65, 66, .5);
+      color: #fff;
+      cursor: default;
+    }
+
+    .web-login .web-login-button {
+      width: 100%;
+      border: none;
+      outline: none;
+      border-radius: 4px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .web-login .web-login-union__login__scan-code {
+      border-left: 1px solid #e8e8e8;
+    }
+
+    .web-login .web-login-union__login__scan-code__title {
+      text-align: center;
+    }
+
+    .web-login .web-login-union__login__scan-code__title {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: #222;
+    }
+
+    .web-login .web-login-union__login__scan-code .web-login-scan-code {
+      min-height: auto;
+    }
+
+    .web-login .web-login-scan-code {
+      width: 228px;
+    }
+
+    .web-login .web-login-union__login__scan-code .web-login-scan-code__content {
+      border: none;
+    }
+
+    .web-login .web-login-scan-code__content {
+      margin-top: 20px;
+      padding: 0 32px;
+    }
+
+    .web-login .web-login-scan-code__content {
+      border-radius: 4px;
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper {
+      position: relative;
+      width: 132px;
+      height: 132px;
+      background-color: #f5f5f5;
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper {
+      margin: 0 auto;
+    }
+
+    .web-login .web-login-scan-code__content__qrcode-wrapper__qrcode {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .web-login img {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-scan-desc {
+      margin-top: 26px;
+      font-size: 12px;
+      line-height: 22px;
+      text-align: center;
+      color: #222;
+    }
+
+    .web-login p {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-scan-desc__btn {
+      cursor: pointer;
+      padding: 0 6px;
+      word-break: keep-all;
+      color: #0e408c;
+    }
+
+    .web-login .web-login-union__footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 56px;
+      padding: 0 32px 0 40px;
+    }
+
+    .web-login .web-login-union__footer .web-login-other-login-method {
+      margin-top: 0;
+    }
+
+    .web-login .web-login-other-login-method {
+      display: flex;
+      align-items: center;
+    }
+
+    .web-login .web-login-other-login-method__text {
+      color: #666;
+      margin-right: 12px;
+      display: none;
+    }
+
+    .web-login .web-login-other-login-method__text {
+      font-size: 12px;
+      height: 32px;
+      line-height: 32px;
+    }
+
+    .web-login .web-login-other-login-method__list {
+      display: flex;
+    }
+
+    .web-login menu,
+    .web-login ol,
+    .web-login ul {
+      list-style: none;
+    }
+
+    .web-login ul {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-other-login-method__list__item {
+      height: 20px;
+      align-items: center;
+      margin-right: 16px;
+    }
+
+    .web-login .web-login-other-login-method__list__item {
+      display: flex;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 32px;
+      color: #999;
+    }
+
+    .web-login li {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-other-login-method__list__item__icon {
+      width: 20px;
+      height: 20px;
+      background-size: 20px 20px;
+      position: relative;
+    }
+
+    .web-login .web-login-other-login-method__list__item__icon {
+      display: inline-block;
+      vertical-align: middle;
+      background-repeat: no-repeat;
+      background-position: 50%;
+    }
+
+    .web-login i {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+    }
+
+    .web-login .web-login-other-login-method__list__item span {
+      margin-left: 6px;
+      color: #666;
+    }
+
+    .web-login .web-login-other-login-method__list__item__icon__qzone_sns {
+      background-image: url(data:image/png;base64,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);
+    }
+
+
+    .web-login .web-login-other-login-method__list__item__icon__weixin {
+      background-image: url(data:image/png;base64,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);
+    }
+
+    .web-login .web-login-other-login-method__list__item__icon__account_pwd {
+      background-image: url(data:image/png;base64,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);
+    }
+
+    .web-login .web-login-link-list {
+      border-radius: 0 0 8px 8px;
+    }
+
+    .web-login .web-login-link-list {
+      display: flex;
+    }
+
+    .web-login menu,
+    .web-login ol,
+    .web-login ul {
+      list-style: none;
+    }
+
+    .web-login ul {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+      vertical-align: baseline;
+    }
+
+    .web-login .web-login-link-list__item:first-child {
+      position: relative;
+    }
+
+    .web-login .web-login-link-list__item:first-child {
+      padding-left: 0;
+    }
+
+    .web-login .web-login-link-list__item {
+      padding: 0 16px;
+    }
+
+    .web-login .web-login-link-list__item:first-child .web-login-link-list__item__text {
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    .web-login .web-login-link-list__item__text {
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .web-login .web-login-link-list__item__text {
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 18px;
+      color: #666;
+    }
+
+    .web-login .web-login-link-list__item:not(:first-child):after {
+      content: "";
+      position: absolute;
+      width: 1px;
+      height: 8px;
+      background: #d8d8d8;
+      transform: translate(-16px, -13px);
+    }
+
+    .web-login .web-login-link-list__item:first-child:hover:before {
+      content: "";
+      position: absolute;
+      background: #fff;
+      width: 8.5px;
+      height: 8.5px;
+      left: calc(50% - 12.25px);
+      top: -14px;
+      transform: rotate(45deg);
+      border-right: none;
+      border-bottom: none;
+      box-shadow: 3px 3px 7px rgba(0, 0, 0, .07);
+      z-index: 1;
+    }
+
+    .web-login .web-login-link-list__item:first-child:hover:after {
+      content: "系统维护中，暂时无法注册";
+      position: absolute;
+      left: calc(50% - 8px);
+      transform: translateX(-50%);
+      top: -46px;
+      width: -webkit-max-content;
+      width: -moz-max-content;
+      width: max-content;
+      height: 36px;
+      font-size: 14px;
+      line-height: 36px;
+      color: #666;
+      padding: 0 12px;
+      background: #fff;
+      border-radius: 2px;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, .08);
+    }
+
+
 
 
 
@@ -1363,11 +1881,12 @@ const toggleContent = () => {
       cursor: pointer;
       height: 32px;
       width: 32px;
+
     }
 
     .first-screen-mouse-hint {
       position: absolute;
-      bottom: 81px;
+      bottom: 72px;
       left: 50%;
       transform: translateX(-50%);
       color: #fff;
@@ -1379,7 +1898,7 @@ const toggleContent = () => {
       width: 28px;
       height: 31px;
       position: absolute;
-      bottom: 42px;
+      bottom: 32px;
       left: 50%;
       transform: translateX(-50%);
       cursor: pointer;
@@ -2015,10 +2534,11 @@ const toggleContent = () => {
 
 }
 
+
 @media screen and (max-height: 656px) {
   .login-wrap {
     bottom: -102px;
-    top: unset;
+    top: unset !important;
   }
 }
 </style>
