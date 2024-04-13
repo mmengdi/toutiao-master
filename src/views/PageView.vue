@@ -11,7 +11,7 @@ import closeUrl from '@/assets/images/base64/close-img.dataurl?raw'
 import loginFaqUrl from '@/assets/images/base64/login-faq-img.dataurl?raw'
 import mobileUrl from '@/assets/images/base64/mobile-img.dataurl?raw'
 import refreshUrl from '@/assets/images/base64/refresh-img.dataurl?raw'
-
+import { areaCodes } from '@/utils/areaCodes';
 
 // 隐藏第一页的导航栏
 const showHeader = ref<boolean>(false);
@@ -71,226 +71,6 @@ const toggleAreaCode = () => {
   isShowAreaCode.value = !isShowAreaCode.value;
 }
 
-const areaCodes = [
-  { label: '中国', value: '+86' },
-  { label: '中国香港', value: '+852' },
-  { label: '中国澳门', value: '+853' },
-  { label: '中国台湾', value: '+886' },
-  { label: '阿尔巴尼亚', value: '+355' },
-  { label: '阿尔及利亚', value: '+213' },
-  { label: '阿富汗', value: '+93' },
-  { label: '阿根廷', value: '+54' },
-  { label: '阿拉伯联合酋长国', value: '+971' },
-  { label: '阿鲁巴岛', value: '+297' },
-  { label: '阿曼', value: '+968' },
-  { label: '阿塞拜疆', value: '+994' },
-  { label: '阿森松', value: '+247' },
-  { label: '埃及', value: '+20' },
-  { label: '埃塞俄比亚', value: '+251' },
-  { label: '爱尔兰', value: '+353' },
-  { label: '爱沙尼亚', value: '+372' },
-  { label: '安道尔', value: '+376' },
-  { label: '安哥拉', value: '+244' },
-  { label: '安圭拉', value: '+1264' },
-  { label: '安提瓜和巴布达', value: '+1268' },
-  { label: '奥地利', value: '+43' },
-  { label: '奥兰群岛', value: '+358' },
-  { label: '澳大利亚', value: '+61' },
-  { label: '巴巴多斯', value: '+1246' },
-  { label: '巴哈马', value: '+1242' },
-  { label: '巴基斯坦', value: '+92' },
-  { label: '巴拉圭', value: '+595' },
-  { label: '巴勒斯坦', value: '+970' },
-  { label: '巴林', value: '+973' },
-  { label: '巴拿马', value: '+507' },
-  { label: '巴西', value: '+55' },
-  { label: '白俄罗斯', value: '+375' },
-  { label: '百慕大', value: '+1441' },
-  { label: '保加利亚', value: '+359' },
-  { label: '北马里亚纳群岛', value: '+1670' },
-  { label: '贝宁', value: '+229' },
-  { label: '比利时', value: '+32' },
-  { label: '冰岛', value: '+354' },
-  { label: '波多黎各', value: '+1787' },
-  { label: '波黑', value: '+387' },
-  { label: '波兰', value: '+48' },
-  { label: '玻利维亚', value: '+591' },
-  { label: '伯利兹', value: '+501' },
-  { label: '博茨瓦纳', value: '+267' },
-  { label: '不丹', value: '+975' },
-  { label: '布基拉法索', value: '+226' },
-  { label: '布隆迪', value: '+257' },
-  { label: '朝鲜', value: '+850' },
-  { label: '赤道几内亚', value: '+240' },
-  { label: '丹麦', value: '+45' },
-  { label: '德国', value: '+49' },
-  { label: '多哥', value: '+228' },
-  { label: '多米尼加共和国', value: '+1809' },
-  { label: '多米尼克', value: '+1767' },
-  { label: '俄罗斯', value: '+7' },
-  { label: '厄瓜多尔', value: '+593' },
-  { label: '厄立特里亚', value: '+291' },
-  { label: '法国', value: '+33' },
-  { label: '法罗群岛', value: '+298' },
-  { label: '法属波利尼西亚', value: '+689' },
-  { label: '法属圭亚那', value: '+594' },
-  { label: '梵蒂冈', value: '+379' },
-  { label: '菲律宾', value: '+63' },
-  { label: '斐济', value: '+679' },
-  { label: '芬兰', value: '+358' },
-  { label: '佛得角', value: '+238' },
-  { label: '冈比亚', value: '+220' },
-  { label: '刚果', value: '+242' },
-  { label: '刚果民主共和国', value: '+243' },
-  { label: '哥伦比亚', value: '+57' },
-  { label: '哥斯达黎加', value: '+506' },
-  { label: '格林纳达', value: '+1473' },
-  { label: '格陵兰岛', value: '+299' },
-  { label: '格鲁吉亚', value: '+995' },
-  { label: '瓜德罗普', value: '+590' },
-  { label: '关岛', value: '+1671' },
-  { label: '圭亚那', value: '+592' },
-  { label: '海地', value: '+509' },
-  { label: '韩国', value: '+82' },
-  { label: '荷兰', value: '+31' },
-  { label: '荷属安的列斯', value: '+599' },
-  { label: '洪都拉斯', value: '+504' },
-  { label: '吉布提', value: '+253' },
-  { label: '加拿大', value: '+1' },
-  { label: '吉尔吉斯斯坦', value: '+996' },
-  { label: '几内亚', value: '+224' },
-  { label: '加那利群岛', value: '+3491' },
-  { label: '加纳', value: '+233' },
-  { label: '加蓬', value: '+241' },
-  { label: '柬埔寨', value: '+855' },
-  { label: '捷克', value: '+420' },
-  { label: '喀麦隆', value: '+237' },
-  { label: '卡塔尔', value: '+974' },
-  { label: '开曼群岛', value: '+1345' },
-  { label: '科摩罗', value: '+269' },
-  { label: '科索沃', value: '+883' },
-  { label: '科特迪瓦', value: '+225' },
-  { label: '科威特', value: '+965' },
-  { label: '克罗地亚', value: '+385' },
-  { label: '肯尼亚', value: '+254' },
-  { label: '拉脱维亚', value: '+371' },
-  { label: '莱索托', value: '+266' },
-  { label: '老挝', value: '+856' },
-  { label: '黎巴嫩', value: '+961' },
-  { label: '立陶宛', value: '+370' },
-  { label: '利比里亚', value: '+231' },
-  { label: '利比亚', value: '+218' },
-  { label: '列支敦士登', value: '+423' },
-  { label: '留尼旺岛', value: '+262' },
-  { label: '卢森堡', value: '+352' },
-  { label: '卢旺达', value: '+250' },
-  { label: '罗马尼亚', value: '+40' },
-  { label: '马达加斯加', value: '+261' },
-  { label: '马尔代夫', value: '+960' },
-  { label: '马耳他', value: '+356' },
-  { label: '马拉维', value: '+265' },
-  { label: '马来西亚', value: '+60' },
-  { label: '马里', value: '+223' },
-  { label: '马其顿', value: '+389' },
-  { label: '马绍尔群岛', value: '+692' },
-  { label: '马提尼克', value: '+596' },
-  { label: '马约特', value: '+262' },
-  { label: '毛里求斯', value: '+230' },
-  { label: '毛里塔尼亚', value: '+222' },
-  { label: '美国', value: '+1' },
-  { label: '美属萨摩亚', value: '+1684' },
-  { label: '美属维尔京群岛', value: '+1340' },
-  { label: '蒙古', value: '+976' },
-  { label: '蒙塞拉特岛', value: '+1664' },
-  { label: '蒙特內哥羅', value: '+382' },
-  { label: '孟加拉国', value: '+880' },
-  { label: '秘鲁', value: '+51' },
-  { label: '密克罗尼西亚联邦', value: '+691' },
-  { label: '缅甸', value: '+95' },
-  { label: '摩尔多瓦', value: '+373' },
-  { label: '摩洛哥', value: '+212' },
-  { label: '摩纳哥', value: '+377' },
-  { label: '莫桑比克', value: '+258' },
-  { label: '墨西哥', value: '+52' },
-  { label: '纳米比亚', value: '+264' },
-  { label: '南非', value: '+27' },
-  { label: '尼泊尔', value: '+977' },
-  { label: '尼加拉瓜', value: '+505' },
-  { label: '尼日尔', value: '+227' },
-  { label: '尼日利亚', value: '+234' },
-  { label: '挪威', value: '+47' },
-  { label: '帕劳', value: '+680' },
-  { label: '葡萄牙', value: '+351' },
-  { label: '千里达及托巴哥', value: '+1868' },
-  { label: '日本', value: '+81' },
-  { label: '瑞典', value: '+46' },
-  { label: '瑞士', value: '+41' },
-  { label: '圣诞岛', value: '+61' },
-  { label: '圣基茨和尼维斯', value: '+1869' },
-  { label: '圣卢西亚', value: '+1758' },
-  { label: '圣马力诺', value: '+223' },
-  { label: '圣皮埃尔和密克隆群岛', value: '+508' },
-  { label: '圣文森特和格林纳丁斯', value: '+1784' },
-  { label: '斯里兰卡', value: '+94' },
-  { label: '斯洛伐克', value: '+421' },
-  { label: '斯洛文尼亚', value: '+386' },
-  { label: '斯威士兰', value: '+268' },
-  { label: '苏丹', value: '+249' },
-  { label: '苏里南', value: '+597' },
-  { label: '索马里', value: '+252' },
-  { label: '塔吉克斯坦', value: '+992' },
-  { label: '沙特阿拉伯', value: '+966' },
-  { label: '塞舌尔', value: '+248' },
-  { label: '塞浦路斯', value: '+357' },
-  { label: '塞内加尔', value: '+221' },
-  { label: '塞拉利昂', value: '+232' },
-  { label: '塞尔维亚', value: '+381' },
-  { label: '萨尔瓦多', value: '+503' },
-  { label: '汤加', value: '+676' },
-  { label: '坦桑尼亚', value: '+255' },
-  { label: '泰国', value: '+66' },
-  { label: '特克斯和凯科斯群岛', value: '+1649' },
-  { label: '突尼斯', value: '+216' },
-  { label: '图瓦卢', value: '+688' },
-  { label: '土耳其', value: '+90' },
-  { label: '土库曼斯坦', value: '+993' },
-  { label: '乌兹别克斯坦', value: '+998' },
-  { label: '乌拉圭', value: '+598' },
-  { label: '乌克兰', value: '+380' },
-  { label: '乌干达', value: '+256' },
-  { label: '文莱', value: '+673' },
-  { label: '委内瑞拉', value: '+58' },
-  { label: '危地马拉', value: '+502' },
-  { label: '叙利亚', value: '+963' },
-  { label: '匈牙利', value: '+36' },
-  { label: '新西兰', value: '+64' },
-  { label: '新喀里多尼亚', value: '+687' },
-  { label: '新加坡', value: '+65' },
-  { label: '希腊', value: '+30' },
-  { label: '西萨摩亚', value: '+685' },
-  { label: '西撒哈拉', value: '+212' },
-  { label: '西班牙', value: '+34' },
-  { label: '越南', value: '+84' },
-  { label: '约旦', value: '+962' },
-  { label: '英属维尔京群岛', value: '+1284' },
-  { label: '英国', value: '+44' },
-  { label: '印度尼西亚', value: '+62' },
-  { label: '印度', value: '+91' },
-  { label: '意大利', value: '+39' },
-  { label: '以色列', value: '+972' },
-  { label: '伊朗', value: '+98' },
-  { label: '伊拉克', value: '+964' },
-  { label: '也门', value: '+967' },
-  { label: '亚美尼亚', value: '+374' },
-  { label: '牙买加', value: '+1876' },
-  { label: '中非', value: '+236' },
-  { label: '智利', value: '+56' },
-  { label: '直布罗陀', value: '+350' },
-  { label: '乍得', value: '+235' },
-  { label: '赞比亚', value: '+260' },
-
-];
-
 
 const selectAreaCode = (item: { label: string, value: string }) => {
   selectedArea.value = item.value;
@@ -342,7 +122,6 @@ const toggleLogin = () => {
   loginForm.value = !loginForm.value;
   resetPwdLogin.value = !resetPwdLogin.value;
 };
-
 
 // 登录
 const login = () => {
@@ -524,11 +303,9 @@ const toggleContent = (): void => {
                                 </li>
                               </ul>
                             </div>
-
-
                           </div>
                           <input name="normal-input" type="tel" class="web-login-normal-input__input" placeholder="手机号"
-                            autocomplete="tel" maxlength="50" tabindex="0" aria-label="请输入手机号" value="">
+                            autocomplete="tel" maxlength="11" tabindex="0" aria-label="请输入手机号" value="">
                         </div>
                       </div>
                       <div class="web-login-mobile-code__code-input-wrapper">
@@ -537,7 +314,7 @@ const toggleContent = (): void => {
                             role="button">获取验证码</span>
                           <div class="web-login-button-input__input-wrapper send-input">
                             <input name="button-input" type="tel" class="web-login-button-input__input"
-                              placeholder="验证码" autocomplete="off" maxlength="50" tabindex="0" aria-label="请输入验证码"
+                              placeholder="验证码" autocomplete="off" maxlength="4" tabindex="0" aria-label="请输入验证码"
                               value="">
                           </div>
                         </div>
@@ -551,10 +328,10 @@ const toggleContent = (): void => {
                         <el-checkbox class="web-login_checkbox" />
 
                         <span class="web-login-confirm-info__before-text">我已阅读并同意</span>
-                        <a target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
+                        <a target="_blank" href="/agreement" class="web-login-confirm-info__info" tabindex="0"
                           aria-label="《用户协议》">《用户协议》</a>
                         <span class="web-login-confirm-info__connect-text">和</span>
-                        <a target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
+                        <a target="_blank" href="/privacy" class="web-login-confirm-info__info" tabindex="0"
                           aria-label="《隐私政策》">《隐私政策》</a>
                       </div>
                       <div class="web-login-mobile-code__button-wrapper">
@@ -668,19 +445,27 @@ const toggleContent = (): void => {
                   <div class="web-login-other-login-method__text">其他登录方式</div>
                   <ul class="web-login-other-login-method__list">
                     <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="抖音登录" role="button">
-                      <i :style="{ backgroundImage: `url(${awemeUrl})` }"
+                      <router-link to="/aweme" target="_blank">
+                         <i :style="{ backgroundImage: `url(${awemeUrl})` }"
                         class="web-login-other-login-method__list__item__icon"></i>
                       <span>抖音登录</span>
+                      </router-link>
                     </li>
                     <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="QQ登录" role="button">
-                      <i :style="{ backgroundImage: `url(${qzoneUrl})` }"
-                        class="web-login-other-login-method__list__item__icon"></i>
-                      <span>QQ登录</span>
+                      <a href="https://graph.qq.com/oauth2.0/show?which=Login&display=pc&client_id=100290348&response_type=code&state=731b5e4c3gAToVCpcXpvbmVfc25zoVOgoU7ZhWh0dHBzOi8vc3NvLnRvdXRpYW8uY29tL2F1dGgvbG9naW5fc3VjY2Vzcy8_c2VydmljZT1odHRwcyUzQSUyRiUyRm1wLnRvdXRpYW8uY29tJTJGcHJvZmlsZV92NCUyRmdyYXBoaWMlMkZwdWJsaXNoJTNGZnJvbSUzRHRvdXRpYW9fcGOhVgGhSQChRAChQdEEz6FN0QTPoUiubXAudG91dGlhby5jb22hUgSiUEwApkFDVElPTqChTNl8aHR0cHM6Ly9tcC50b3V0aWFvLmNvbS9hdXRoL3BhZ2UvbG9naW4_cmVkaXJlY3RfdXJsPUpUSkdjSEp2Wm1sc1pWOTJOQ1V5Um1keVlYQm9hV01sTWtad2RXSnNhWE5vSlROR1puSnZiU1V6UkhSdmRYUnBZVzlmY0dNPaFU2SBmOWM1YmJlNDdkOGI5ZWQzMDYxOWZhZmI1YmNhZDAwM6FX02YMv7lDxUYyoUYAolNBAKFVwqJNTMI%3D&redirect_uri=https%3A%2F%2Fapi.snssdk.com%2Fauth%2Flogin_success&scope=get_user_info,add_share,add_t,add_pic_t,get_info,get_other_info,get_fanslist,get_idollist,add_idol,get_repost_list"
+                        target="_blank">
+                        <i :style="{ backgroundImage: `url(${qzoneUrl})` }"
+                          class="web-login-other-login-method__list__item__icon"></i>
+                        <span>QQ登录</span>
+                      </a>
                     </li>
                     <li class="web-login-other-login-method__list__item" tabindex="0" aria-label="微信登录" role="button">
-                      <i :style="{ backgroundImage: `url(${weixinUrl})` }"
-                        class="web-login-other-login-method__list__item__icon"></i>
-                      <span>微信登录</span>
+                      <router-link to="/wechat" target="_blank">
+                        <i :style="{ backgroundImage: `url(${weixinUrl})` }"
+                          class="web-login-other-login-method__list__item__icon">
+                        </i>
+                        <span>微信登录</span>
+                      </router-link>
                     </li>
                     <!-- 密码登录 -->
                     <li v-if="!pwdLogin" @click="toggleLoginMethod" class="web-login-other-login-method__list__item"
@@ -818,11 +603,20 @@ const toggleContent = (): void => {
               stroke-linecap="round"></path>
           </svg> -->
           <!-- 暂停 -->
-          <svg t="1712889439118" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+          <!-- <svg t="1712889439118" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
             p-id="15583" data-spm-anchor-id="a313x.search_index.0.i6.d3ed3a81T9mL78" width="32" height="32">
             <path
               d="M512 0a512 512 0 0 1 512 512 512 512 0 1 1-512-512z m-64 320h-128v384h128v-384z m256 0h-128v384h128v-384z"
               fill="#ede7f2" p-id="15584"></path>
+          </svg> -->
+          <svg t="1712980155799" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            p-id="2536" width="36" height="36">
+            <path d="M512 512m-450.56 0a450.56 450.56 0 1 0 901.12 0 450.56 450.56 0 1 0-901.12 0Z" fill="#56555c"
+              p-id="2537" data-spm-anchor-id="a313x.collections_detail.0.i5.100d3a81zMWr74" class="selected"></path>
+            <path
+              d="M399.36 348.16a30.72 30.72 0 0 1 30.72 30.72v266.24a30.72 30.72 0 0 1-61.44 0v-266.24a30.72 30.72 0 0 1 30.72-30.72z m225.28 0a30.72 30.72 0 0 1 30.72 30.72v266.24a30.72 30.72 0 0 1-61.44 0v-266.24a30.72 30.72 0 0 1 30.72-30.72z"
+              fill="#FFFFFF" p-id="2538">
+            </path>
           </svg>
         </template>
         <template v-else>
@@ -836,11 +630,24 @@ const toggleContent = (): void => {
             </path>
           </svg> -->
           <!-- 播放 -->
-          <svg t="1712889738526" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+          <!-- <svg t="1712889738526" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
             p-id="24586" width="32" height="32">
             <path
               d="M512 0C230.4 0 0 230.4 0 512s230.4 512 512 512 512-230.4 512-512C1024 227.84 793.6 0 512 0z m217.6 552.96L422.4 739.84c-2.56 2.56-7.68 2.56-12.8 2.56s-7.68 0-12.8-2.56c-7.68-5.12-12.8-12.8-12.8-23.04v-384c0-5.12 0-10.24 5.12-15.36 7.68-12.8 23.04-15.36 35.84-7.68l307.2 197.12c7.68 5.12 12.8 12.8 12.8 23.04-2.56 10.24-7.68 17.92-15.36 23.04z"
               p-id="24587" fill="#ede7f2"></path>
+            <path
+              d="M450.92864 333.49632l246.5792 146.432c19.06688 11.32544 25.00608 35.38944 13.25056 53.76-3.35872 5.28384-7.9872 9.70752-13.49632 12.9024l-246.5792 144.05632c-19.1488 11.20256-44.09344 5.30432-55.7056-13.14816a38.01088 38.01088 0 0 1-5.85728-20.2752V366.77632c0-21.58592 18.14528-39.07584 40.5504-39.07584 7.49568 0 14.86848 2.00704 21.25824 5.81632z"
+              fill="#FFFFFF" p-id="3055">
+            </path>
+          </svg> -->
+          <svg t="1712979264117" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            p-id="3053" width="36" height="36">
+            <path d="M512 512m-450.56 0a450.56 450.56 0 1 0 901.12 0 450.56 450.56 0 1 0-901.12 0Z" fill="#56555c"
+              p-id="3054"></path>
+            <path
+              d="M450.92864 333.49632l246.5792 146.432c19.06688 11.32544 25.00608 35.38944 13.25056 53.76-3.35872 5.28384-7.9872 9.70752-13.49632 12.9024l-246.5792 144.05632c-19.1488 11.20256-44.09344 5.30432-55.7056-13.14816a38.01088 38.01088 0 0 1-5.85728-20.2752V366.77632c0-21.58592 18.14528-39.07584 40.5504-39.07584 7.49568 0 14.86848 2.00704 21.25824 5.81632z"
+              fill="#FFFFFF" p-id="3055">
+            </path>
           </svg>
         </template>
       </div>
