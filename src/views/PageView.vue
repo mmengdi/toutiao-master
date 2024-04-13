@@ -56,7 +56,7 @@ setTimeout(() => {
 const isLoginError = ref<boolean>(false);
 
 // 账密登录
-const isAccountPwdLogin = ref<boolean>(false);
+const isAccountPwdLogin = ref<boolean>(true);
 const pwdLogin = ref<boolean>(false);
 const toggleLoginMethod = () => {
   isAccountPwdLogin.value = !isAccountPwdLogin.value;
@@ -625,8 +625,7 @@ const toggleContent = (): void => {
                     </article>
                   </div>
                 </div>
-
-
+                <!-- 扫码登录 -->
                 <div class="web-login-union__login__scan-code">
                   <div class="web-login-union__login__scan-code__title">扫码登录</div>
                   <article class="web-login-scan-code">
@@ -660,10 +659,10 @@ const toggleContent = (): void => {
                       </p>
                     </div>
 
-
                   </article>
                 </div>
               </div>
+              <!-- 底部 -->
               <div class="web-login-union__footer">
                 <div class="web-login-other-login-method">
                   <div class="web-login-other-login-method__text">其他登录方式</div>
@@ -684,7 +683,7 @@ const toggleContent = (): void => {
                       <span>微信登录</span>
                     </li>
                     <!-- 密码登录 -->
-                    <li v-if="pwdLogin" @click="toggleLoginMethod" class="web-login-other-login-method__list__item"
+                    <li v-if="!pwdLogin" @click="toggleLoginMethod" class="web-login-other-login-method__list__item"
                       tabindex="0" aria-label="账密登录" role="button">
                       <i :style="{ backgroundImage: `url(${pwdUrl})` }"
                         class="web-login-other-login-method__list__item__icon"></i>
@@ -720,6 +719,7 @@ const toggleContent = (): void => {
                 </ul>
               </div>
             </article>
+            <!-- 重置密码 -->
             <article class="web-login-password-reset" v-if="resetPwdLogin">
               <article class="web-login-common-wrapper">
                 <div class="web-login-common-wrapper__tab">
@@ -803,16 +803,6 @@ const toggleContent = (): void => {
                 </ul>
               </article>
             </article>
-
-
-
-
-
-
-
-
-
-
           </article>
         </div>
       </div>
@@ -2643,7 +2633,7 @@ const toggleContent = (): void => {
 
     .web-login .web-login-password-reset .web-login-tab-list__item__active {
       font-weight: 500;
-      font-size: 16px;
+      font-size: 20px;
       line-height: 24px;
       color: #222;
     }
@@ -2722,18 +2712,6 @@ const toggleContent = (): void => {
       vertical-align: baseline;
     }
 
-    .web-login .web-login-area-code__input-wrapper__icon-arrow__down {
-      transform: rotate(0);
-      transition: transform .5s;
-    }
-
-    .web-login .web-login-area-code__input-wrapper__icon-arrow {
-      display: block;
-      width: 16px;
-      height: 16px;
-      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACwSURBVHgB7dIxDoMwEETRjU+ahoJTBE5B4btayRREFrIibO9W+U9CUJn5AjMAAAAAAP7TwwblnF+llC2ltC3LstsAjzOSDdKLz7uGWKdzfH3WiJmAvXruiqjHX8/qNfwLyXEc+vzf4Xd+hdb4dV03GzQVID0R3uNlOkDuRESMF5cA+RURNV7cAqQVoXvUeHENkGtEzXu8uAdIKyJivIQESB0RNT7cJ+KpywAAAAAgwBtu2J1qNlDSQAAAAABJRU5ErkJggg==) no-repeat 50%;
-      background-size: 16px 16px;
-    }
 
     .web-login .web-login-button-input__input,
     .web-login .web-login-normal-input__input {
@@ -2904,11 +2882,10 @@ const toggleContent = (): void => {
       transform: translate(-16px, -13px);
     }
 
-
-
-
-
-
+    .web-login .web-login-button:not(.web-login .web-login-button__disabled) {
+      background: #ff5e5e;
+      cursor: pointer;
+    }
 
 
     .first-screen-muted {
