@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import type { TabsPaneContext } from 'element-plus'
 import vSlideIn from '@/utils/vSlideIn'
 import qrcodeUrl from '@/assets/images/base64/qrcode-img.dataurl?raw'
 import awemeUrl from '@/assets/images/base64/aweme-img.dataurl?raw'
@@ -12,6 +11,7 @@ import loginFaqUrl from '@/assets/images/base64/login-faq-img.dataurl?raw'
 import mobileUrl from '@/assets/images/base64/mobile-img.dataurl?raw'
 import refreshUrl from '@/assets/images/base64/refresh-img.dataurl?raw'
 import { areaCodes } from '@/utils/areaCodes';
+
 
 // 隐藏第一页的导航栏
 const showHeader = ref<boolean>(false);
@@ -1017,6 +1017,7 @@ const menuLinks = [
                               </ul>
                             </div>
                           </div>
+                          <!-- 输入手机号码 -->
                           <input name="normal-input" type="tel" class="web-login-normal-input__input" placeholder="手机号"
                             autocomplete="tel" maxlength="11" tabindex="0" aria-label="请输入手机号" value="">
                         </div>
@@ -1026,6 +1027,7 @@ const menuLinks = [
                           <span class="web-login-button-input__button-text send-input" tabindex="0" aria-live="off"
                             role="button">获取验证码</span>
                           <div class="web-login-button-input__input-wrapper send-input">
+                            <!-- 输入验证码 -->
                             <input name="button-input" type="tel" class="web-login-button-input__input"
                               placeholder="验证码" autocomplete="off" maxlength="4" tabindex="0" aria-label="请输入验证码"
                               value="">
@@ -1033,11 +1035,13 @@ const menuLinks = [
                         </div>
                       </div>
                       <div class="web-login-error" role="alert" aria-relevant="all" tabindex="0" aria-live="assertive"
-                        aria-atomic="true" aria-label="警告:无">
+                        aria-atomic="true" aria-label="警告: 无">
                       </div>
                       <div class="web-login-confirm-info" tabindex="0" aria-label="我已阅读并同意《用户协议》和《隐私政策》">
                         <!-- <span class="web-login-confirm-info__checkbox" role="checkbox" aria-checked="false" tabindex="0"
                           aria-label="协议勾选框"></span> -->
+
+                        <!-- 协议勾选框 -->
                         <el-checkbox class="web-login_checkbox" />
 
                         <span class="web-login-confirm-info__before-text">我已阅读并同意</span>
@@ -1110,8 +1114,9 @@ const menuLinks = [
                           target="_blank" href="#" class="web-login-confirm-info__info" tabindex="0"
                           aria-label="《隐私政策》">《隐私政策》</a>
                       </div>
-                      <div class="web-login-account-password__button-wrapper"><button type="submit"
-                          class="web-login-button web-login-button__disabled">登录</button></div>
+                      <div class="web-login-account-password__button-wrapper">
+                        <button type="submit" class="web-login-button web-login-button__disabled">登录</button>
+                      </div>
                     </article>
                   </div>
                 </div>
@@ -1584,9 +1589,9 @@ const menuLinks = [
       </div>
     </div>
 
-    <div role="contentinfo" aria-label="服务区,当前为网页底部服务区，有加入头条、用户协议、隐私政策等内容。" class="footer-wrapper" aria-region="true"
-      aria-regiontype="4" setedaria="true" tabindex="0" aria-autolabel="true"
-      :style="{ transform: showFooter ? 'translateX(0)' : 'translateX(-100%)' }" id="ariajokaqkju15k">
+    <div class="footer-wrapper" aria-region="true" aria-regiontype="4" setedaria="true" tabindex="0"
+      aria-autolabel="true" :style="{ transform: showFooter ? 'translateX(0)' : 'translateX(-100%)' }"
+      id="ariajokaqkju15k">
       <div>
         <div>
           <a href="#" rel="nofollow" target="_blank">加入头条</a>
@@ -1596,8 +1601,7 @@ const menuLinks = [
           <a href="#" rel="nofollow" target="_blank">广告合作</a>
           <a href="#" rel="" target="_blank">友情链接</a>
           <span class="more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" setedaria="true"
-            aria-label="按钮,更多,当前状态,未展开,当前有浮动窗口，按ctrl+下键进入窗口,按tab键在浮动层中遍历信息,按esc键返回" aria-autolabel="true"
-            @mouseover="showFooterMore" @mouseout="hideFooterMore"> 更多
+            aria-autolabel="true" @mouseover="showFooterMore" @mouseout="hideFooterMore"> 更多
             <div class="more-link" :style="{ display: showMoreMenu ? 'block' : 'none' }" role="menu" setedaria="true"
               tabindex="-1" id="aria9p9o7znpqac">
               <a v-for="(link, index) in menuLinks" :key="index" :href="link.url" rel="nofollow" target="_blank"
@@ -1608,6 +1612,7 @@ const menuLinks = [
           </span>
         </div>
         <div>
+          <span>清理缓存</span>
           <span>北京抖音信息服务有限公司</span>
           <span>违法和不良信息举报：400-140-2108</span>
           <span>举报邮箱：jubao@toutiao.com</span>
@@ -1973,11 +1978,6 @@ const menuLinks = [
       line-height: 40px;
     }
 
-    .web-login .web-login-button__disabled {
-      background: rgba(240, 65, 66, .5);
-      color: #fff;
-      cursor: default;
-    }
 
     .web-login .web-login-button {
       width: 100%;
@@ -2714,7 +2714,8 @@ const menuLinks = [
     }
 
     .web-login .web-login-button__disabled {
-      background: rgba(240, 65, 66, .5);
+      // background: rgba(240, 65, 66, .5);
+      background: #ff5e5e;
       color: #fff;
       cursor: default;
     }
