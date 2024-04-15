@@ -1560,48 +1560,44 @@ const toggleContent = (): void => {
         </div>
       </div>
     </div>
-  </div>
-  <div role="contentinfo" aria-label="服务区,当前为网页底部服务区，有加入头条、用户协议、隐私政策等内容。" class="footer-wrapper" aria-region="true"
-    aria-regiontype="4" setedaria="true" tabindex="0" aria-autolabel="true" style="transform: translateX(0px);"
-    id="ariajokaqkju15k">
-    <div>
+
+    <div role="contentinfo" aria-label="服务区,当前为网页底部服务区，有加入头条、用户协议、隐私政策等内容。" class="footer-wrapper" aria-region="true"
+      aria-regiontype="4" setedaria="true" tabindex="0" aria-autolabel="true" style="transform: translateX(0px);"
+      id="ariajokaqkju15k">
       <div>
-        <a href="https://job.bytedance.com" rel="nofollow" target="_blank">加入头条</a>
-        <a href="/user_agreement/" rel="nofollow" target="_blank">用户协议</a>
-        <a href="/privacy_protection/" rel="nofollow" target="_blank">隐私政策</a>
-        <a href="/media_partners/" rel="nofollow" target="_blank">媒体合作</a>
-        <a href="https://www.oceanengine.com/resource/toutiao?source=toutiao-pc-footer" rel="nofollow"
-          target="_blank">广告合作</a>
-        <a href="/friend_link/" rel="" target="_blank">友情链接</a>
-        <span class="more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" setedaria="true"
-          aria-label="按钮,更多,当前状态,未展开,当前有浮动窗口，按ctrl+下键进入窗口,按tab键在浮动层中遍历信息,按esc键返回" aria-autolabel="true">更多
-          <div class="more-link" style="display: none;" role="menu" setedaria="true" tabindex="-1" id="aria9p9o7znpqac">
-            <a href="/report/" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">媒体报道</a>
-            <a href="/cooperation/" rel="nofollow" target="_blank" role="menuitem" tabindex="-1"
-              setedaria="true">产品合作</a>
-            <a href="/mcn_publicity/" rel="nofollow" target="_blank" role="menuitem" tabindex="-1"
-              setedaria="true">头条MCN</a>
-            <a href="/contact/" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">联系我们</a>
-            <a href="/corrupt_report/" rel="nofollow" target="_blank" role="menuitem" tabindex="-1"
-              setedaria="true">廉洁举报</a>
-            <a href="https://renzheng.toutiao.com/guide?platform=%27PC%27&amp;source=%27www.toutiao.com%27"
-              rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">企业认证</a>
-            <a href="https://hys.people-health.cn/m/#/pages/ncovSuff/index" rel="nofollow" target="_blank"
-              role="menuitem" tabindex="-1" setedaria="true">肺炎求助</a>
-            <a href="https://www.piyao.org.cn/2020yqpy" rel="nofollow" target="_blank" role="menuitem" tabindex="-1"
-              setedaria="true">辟谣专区</a>
-            <a href="https://www.toutiao.com/search_disclaimer/" rel="nofollow" target="_blank" role="menuitem"
-              tabindex="-1" setedaria="true">免责声明</a>
-          </div>
-        </span>
-      </div>
-      <div>
-        <span>北京抖音信息服务有限公司</span>
-        <span>违法和不良信息举报：400-140-2108</span>
-        <span>举报邮箱：jubao@toutiao.com</span>
+        <div>
+          <a href="#" rel="nofollow" target="_blank">加入头条</a>
+          <a href="/agreement" rel="nofollow" target="_blank">用户协议</a>
+          <a href="/privacy" rel="nofollow" target="_blank">隐私政策</a>
+          <a href="#" rel="nofollow" target="_blank">媒体合作</a>
+          <a href="#" rel="nofollow" target="_blank">广告合作</a>
+          <a href="#" rel="" target="_blank">友情链接</a>
+          <span class="more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" setedaria="true"
+            aria-label="按钮,更多,当前状态,未展开,当前有浮动窗口，按ctrl+下键进入窗口,按tab键在浮动层中遍历信息,按esc键返回" aria-autolabel="true">更多
+            <div class="more-link" style="display: none;" role="menu" setedaria="true" tabindex="-1"
+              id="aria9p9o7znpqac">
+              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">媒体报道</a>
+              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">产品合作</a>
+              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">头条MCN</a>
+              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">联系我们</a>
+              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">廉洁举报</a>
+              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">企业认证</a>
+              <a href="https://hys.people-health.cn/m/#/pages/ncovSuff/index" rel="nofollow" target="_blank"
+                role="menuitem" tabindex="-1" setedaria="true">肺炎求助</a>
+              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">辟谣专区</a>
+              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">免责声明</a>
+            </div>
+          </span>
+        </div>
+        <div>
+          <span>北京抖音信息服务有限公司</span>
+          <span>违法和不良信息举报：400-140-2108</span>
+          <span>举报邮箱：jubao@toutiao.com</span>
+        </div>
       </div>
     </div>
   </div>
+
 </template>
 
 <style lang="scss">
