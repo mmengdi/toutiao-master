@@ -1612,7 +1612,6 @@ const menuLinks = [
           </span>
         </div>
         <div>
-          <span>清理缓存</span>
           <span>北京抖音信息服务有限公司</span>
           <span>违法和不良信息举报：400-140-2108</span>
           <span>举报邮箱：jubao@toutiao.com</span>
