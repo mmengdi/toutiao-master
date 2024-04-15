@@ -20,6 +20,10 @@ const handleScroll = () => {
   if (firstScreenBottom !== undefined) {
     showHeader.value = firstScreenBottom <= 0;
   }
+
+  const firstPageHeight = window.innerHeight;
+  const scrollY = window.scrollY;
+  showFooter.value = scrollY >= firstPageHeight;
 };
 
 // 登录表单
@@ -652,10 +656,6 @@ const changePhoneContainer = (index: number) => {
 };
 
 // tab切换
-const activeName = ref('first')
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event)
-}
 
 onMounted(() => {
   const swiperWrapper = document.querySelector('.swiper-wrapper') as HTMLElement;
@@ -917,6 +917,29 @@ const toggleContent = (): void => {
   content.value = content.value === 'content1' ? 'content2' : 'content1';
 };
 
+// 控制页脚不显示在第一页
+const showFooter = ref(false);
+
+// 底部 footer 显示更多
+const showMoreMenu = ref(false);
+const showFooterMore = () => {
+  showMoreMenu.value = true;
+}
+const hideFooterMore = () => {
+  showMoreMenu.value = false;
+}
+
+const menuLinks = [
+  { label: '媒体报道', url: '#' },
+  { label: '产品合作', url: '#' },
+  { label: '头条MCN', url: '#' },
+  { label: '联系我们', url: '#' },
+  { label: '廉洁举报', url: '#' },
+  { label: '企业认证', url: '#' },
+  { label: '肺炎求助', url: '#' },
+  { label: '辟谣专区', url: '#' },
+  { label: '免责声明', url: '#' },
+]
 
 </script>
 
@@ -1444,7 +1467,7 @@ const toggleContent = (): void => {
       <div class="title">服务包助力优质作者创作</div>
       <div class="subtitle">多渠道流量扶持，多种签约计划，助力优质内容快速完成 0 到 1 冷启动</div>
       <div class="plan-list" v-slide-in>
-        <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+        <el-tabs class="demo-tabs">
           <el-tab-pane v-for="(tab, index) in serviceTabs" :key="index" :label="tab.label"
             :name="tab.name"></el-tab-pane>
         </el-tabs>
@@ -1562,8 +1585,8 @@ const toggleContent = (): void => {
     </div>
 
     <div role="contentinfo" aria-label="服务区,当前为网页底部服务区，有加入头条、用户协议、隐私政策等内容。" class="footer-wrapper" aria-region="true"
-      aria-regiontype="4" setedaria="true" tabindex="0" aria-autolabel="true" style="transform: translateX(0px);"
-      id="ariajokaqkju15k">
+      aria-regiontype="4" setedaria="true" tabindex="0" aria-autolabel="true"
+      :style="{ transform: showFooter ? 'translateX(0)' : 'translateX(-100%)' }" id="ariajokaqkju15k">
       <div>
         <div>
           <a href="#" rel="nofollow" target="_blank">加入头条</a>
@@ -1573,19 +1596,14 @@ const toggleContent = (): void => {
           <a href="#" rel="nofollow" target="_blank">广告合作</a>
           <a href="#" rel="" target="_blank">友情链接</a>
           <span class="more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" setedaria="true"
-            aria-label="按钮,更多,当前状态,未展开,当前有浮动窗口，按ctrl+下键进入窗口,按tab键在浮动层中遍历信息,按esc键返回" aria-autolabel="true">更多
-            <div class="more-link" style="display: none;" role="menu" setedaria="true" tabindex="-1"
-              id="aria9p9o7znpqac">
-              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">媒体报道</a>
-              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">产品合作</a>
-              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">头条MCN</a>
-              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">联系我们</a>
-              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">廉洁举报</a>
-              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">企业认证</a>
-              <a href="https://hys.people-health.cn/m/#/pages/ncovSuff/index" rel="nofollow" target="_blank"
-                role="menuitem" tabindex="-1" setedaria="true">肺炎求助</a>
-              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">辟谣专区</a>
-              <a href="#" rel="nofollow" target="_blank" role="menuitem" tabindex="-1" setedaria="true">免责声明</a>
+            aria-label="按钮,更多,当前状态,未展开,当前有浮动窗口，按ctrl+下键进入窗口,按tab键在浮动层中遍历信息,按esc键返回" aria-autolabel="true"
+            @mouseover="showFooterMore" @mouseout="hideFooterMore"> 更多
+            <div class="more-link" :style="{ display: showMoreMenu ? 'block' : 'none' }" role="menu" setedaria="true"
+              tabindex="-1" id="aria9p9o7znpqac">
+              <a v-for="(link, index) in menuLinks" :key="index" :href="link.url" rel="nofollow" target="_blank"
+                role="menuitem" tabindex="-1" setedaria="true">
+                {{ link.label }}
+              </a>
             </div>
           </span>
         </div>
@@ -3425,7 +3443,7 @@ const toggleContent = (): void => {
         color: #222;
         font-size: 12px;
         line-height: 16px;
-        margin-top: 615px;
+        margin-top: 585px;
         padding-top: 16px;
         position: relative;
 
@@ -3494,6 +3512,7 @@ const toggleContent = (): void => {
   -ms-flex-pack: justify;
   justify-content: space-between;
 }
+
 .footer-wrapper a:first-of-type,
 .footer-wrapper span:first-of-type {
   margin-left: 0;
@@ -3564,5 +3583,23 @@ const toggleContent = (): void => {
   color: #999;
   padding: 12px 0;
   margin-left: 24px;
+}
+
+.footer-wrapper .more .more-link:after {
+  content: "";
+  width: 16px;
+  height: 6px;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAASBAMAAADvSECJAAAAHlBMVEVHcEz////////////////////////////////////JATChAAAACXRSTlMAf0DjEI+/XyDPWu1ZAAAAXklEQVQY02NgoAAwZU4rwCohOXPmRGzijDOBQAC7BqxawBqwaZGESEzEoQFTiyRMYiIODehaJBESE3FoQNUiiSwxEYcGJC0skagSUx2gEsoz0YA5WLhJeCYGMFVhAABuNF5e7AnNUQAAAABJRU5ErkJggg==);
+  background-size: contain;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  -webkit-transform: translateX(-50%) rotate(180deg);
+  -moz-transform: translateX(-50%) rotate(180deg);
+  transform: translateX(-50%) rotate(180deg);
+}
+
+.footer-wrapper .more .more-link a:hover {
+  background: #f8f8f8;
 }
 </style>

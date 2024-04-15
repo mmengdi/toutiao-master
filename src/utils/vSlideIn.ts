@@ -56,7 +56,7 @@ const animationMap = new WeakMap()
 const ob: IntersectionObserver = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
     for (const entry of entries) {
         if (entry.isIntersecting) {
-            console.log(entry);
+            // console.log(entry);
             const animation: Animation | undefined = animationMap.get(entry.target);
             if (animation) {
                 animation.play();
